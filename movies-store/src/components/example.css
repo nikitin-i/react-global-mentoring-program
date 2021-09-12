@@ -1,0 +1,15 @@
+.examples {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0 0 100px;
+}
+
+.examples__item {
+    flex: 0 0 35px;
+    height: 35px;
+    margin: 0 20px 0 0;
+    color: white;
+    font-size: 25px;
+    border: 3px solid white;
+    border-radius: 50%;
+}
