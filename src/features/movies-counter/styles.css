@@ -1,0 +1,12 @@
+.movies-counter {
+    margin: 24px 0 28px;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 400;
+    color: white;
+}
+
+.movies-counter__amount {
+    margin: 0 5px 0 0;
+    font-weight: 700;
+}
