@@ -1,0 +1,33 @@
+.sort-toggle {
+    flex: 0 0 calc(100% - 471px);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    border-bottom: 1px solid #CCCCCC;
+
+    &__item {
+        display: inline-block;
+        padding: 20px;
+        font-size: 20px;
+        color: #FFFFFF;
+        cursor: pointer;
+        opacity: 0.6;
+        text-transform: uppercase;
+
+        &--active {
+            position: relative;
+            opacity: 1;
+
+            &:after {
+                position: absolute;
+                right: -4px;
+                top: 30px;
+                content: '';
+                display: block;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 10px solid #F65261;
+            }
+        }
+    }
+}

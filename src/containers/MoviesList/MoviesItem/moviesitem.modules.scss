@@ -1,0 +1,50 @@
+.movie-item {
+    flex: 0 0 30%;
+    margin: 0 5% 40px 0;
+
+    &:nth-of-type(3n) {
+        margin: 0 0 40px 0;
+    }
+
+    &__poster {
+        width: 100%;
+        min-height: 491px;
+    }
+
+    &__info {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        margin: 20px 0 0;
+        color: #FFFFFF;
+    }
+
+    &__title {
+        flex: 0 0 65%;
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 28px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    &__release {
+        flex: 0 0 25%;
+        height: 36px;
+        padding: 7px 0;
+        border: 1px solid #979797;
+        box-sizing: border-box;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 20px;
+    }
+
+    &__tagline {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 20px;
+    }
+}
