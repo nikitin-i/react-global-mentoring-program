@@ -28,7 +28,7 @@ class App extends Component {
         filteredMovies: []
     };
 
-    componentDidMount = () => {
+    componentDidMount() {
         fetch(GET_MOVIES_URL)
             .then(response => {
                 if (response.ok) {
@@ -39,7 +39,7 @@ class App extends Component {
             })
             .then(response => this.processResponse(response))
             .catch(error => this.errorHandler(error));
-    };
+    }
 
     searchMovies = value => console.log(`We are searching movies for you by this search request - ${value}!`);
 

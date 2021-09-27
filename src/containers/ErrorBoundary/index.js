@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 
 import ErrorMessage from './ErrorMessage';
 
@@ -7,11 +7,11 @@ class ErrorBoundary extends Component {
         hasError: false
     };
 
-    componentDidCatch = () => {
+    componentDidCatch() {
         this.setState(state => ({
             hasError: true
         }));
-    };
+    }
 
     render = () => {
         const {children} = this.props;
@@ -22,9 +22,9 @@ class ErrorBoundary extends Component {
         }
 
         return (
-            <Fragment>
+            <>
                 {children}
-            </Fragment>
+            </>
         );
     };
 }

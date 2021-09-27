@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 
 const Sidebar = ({children}) => (
-    <Fragment>
+    <>
         {children}
-    </Fragment>
+    </>
 );
 
 export default Sidebar;

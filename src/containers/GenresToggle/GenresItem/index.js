@@ -5,8 +5,9 @@ import styles from './genresitem.modules.scss';
 
 const GenresItem = ({value, active, clickHandler}) => {
     const classList = active ? `${styles['genre-item']} ${styles['genre-item--active']}` : styles['genre-item'];
+    const genreClickHandler = () => clickHandler(value);
 
-    return <li className={classList} onClick={() => clickHandler(value)}>{value}</li>;
+    return <li className={classList} onClick={genreClickHandler}>{value}</li>;
 };
 
 GenresItem.propTypes = {

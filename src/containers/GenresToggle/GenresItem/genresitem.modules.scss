@@ -1,12 +1,12 @@
 .genre-item {
     display: inline-block;
-    padding: 20px;
-    font-size: 20px;
+    padding: 16px;
+    font-size: 16px;
     color: #FFFFFF;
-    border-bottom: 3px solid #ccc;
+    border-bottom: 2px solid #ccc;
     cursor: pointer;
 
     &--active {
-        border-bottom: 3px solid #F65261;
+        border-bottom: 2px solid #F65261;
     }
 }

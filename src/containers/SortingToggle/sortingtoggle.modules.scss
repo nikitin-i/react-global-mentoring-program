@@ -1,14 +1,14 @@
 .sort-toggle {
-    flex: 0 0 calc(100% - 471px);
+    flex: 0 0 calc(100% - 377px);
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-end;
-    border-bottom: 1px solid #CCCCCC;
+    border-bottom: 2px solid #CCCCCC;
 
     &__item {
         display: inline-block;
-        padding: 20px;
-        font-size: 20px;
+        padding: 16px;
+        font-size: 16px;
         color: #FFFFFF;
         cursor: pointer;
         opacity: 0.6;
@@ -20,13 +20,13 @@
 
             &:after {
                 position: absolute;
-                right: -4px;
-                top: 30px;
+                right: 0;
+                top: 24px;
                 content: '';
                 display: block;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 10px solid #F65261;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 8px solid #F65261;
             }
         }
     }

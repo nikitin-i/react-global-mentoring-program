@@ -3,21 +3,21 @@
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
-        margin: 0 0 12px;
+        margin: 0 0 4px;
     }
 
     &__icon {
-        width: 45px;
-        height: 45px;
-        margin: 0 17px 0 0;
+        width: 36px;
+        height: 36px;
+        margin: 0 14px 0 0;
         border-radius: 50%;
         border: 1px solid #666555;
     }
 
     &__text {
         font-weight: 500;
-        font-size: 22px;
-        line-height: 27px;
+        font-size: 16px;
+        line-height: 18px;
         color: #E4E4E4;
     }
 }
