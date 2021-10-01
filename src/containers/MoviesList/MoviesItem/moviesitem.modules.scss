@@ -1,0 +1,59 @@
+.movie-item {
+    position: relative;
+    flex: 0 0 22%;
+    margin: 0 4% 32px 0;
+
+    &:hover &__menu {
+        display: block;
+    }
+
+    &:nth-of-type(4n) {
+        margin: 0 0 25px 0;
+    }
+
+    &__poster {
+        width: 100%;
+        min-height: 288px;
+    }
+
+    &__info {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        margin: 16px 0 0;
+        color: #FFFFFF;
+    }
+
+    &__title {
+        flex: 0 0 65%;
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 18px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    &__release {
+        flex: 0 0 25%;
+        height: 36px;
+        padding: 8px 0 0;
+        border: 1px solid #979797;
+        box-sizing: border-box;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16px;
+    }
+
+    &__tagline {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16px;
+    }
+
+    &__menu {
+        display: none;
+    }
+}

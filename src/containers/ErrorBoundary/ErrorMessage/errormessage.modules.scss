@@ -1,0 +1,26 @@
+.error-message {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% + 110px);
+    height: 100%;
+    background-color: #CD5C5C;
+    box-sizing: border-box;
+    margin: 0 -55px;
+    border: 10px dotted #CC0000;
+
+    &__text {
+        padding: 0 300px;
+        margin: 0 0 30px;
+        font-size: 36px;
+        line-height: 44px;
+        color: #FFFFFF;
+    }
+
+    &__image {
+        width: 200px;
+        height: auto;
+        border-radius: 30px;
+    }
+}

@@ -1,0 +1,9 @@
+.search-line {
+    margin: 30px 0 0;
+    padding: 0 0 0 56px;
+
+    & :global(.button) {
+        padding: 13px 56px 12px;
+        margin: 0 0 0 12px;
+    }
+}

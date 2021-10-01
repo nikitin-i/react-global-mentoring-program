@@ -1,20 +1,31 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 
-import MoviesList from './features/movies-list';
-import GenreToggle from './features/genre-toggle';
-import MoviesCounter from './features/movies-counter';
+import Header from './components/Header';
+import Main from './components/Main';
+import Footer from './components/Footer';
+import Sidebar from './components/Sidebar';
+import Logo from './components/Logo';
+import Button from './components/Button';
+import PageHeading from './components/PageHeading';
+import SearchLine from './containers/SearchLine';
+import DetailsList from './containers/DetailsList';
+import ColorPallete from './components/ColorPallete';
+import MoviesList from './containers/MoviesList';
+import GenresToggle from './containers/GenresToggle';
+import SortingToggle from './containers/SortingToggle';
+import MoviesCounter from './components/MoviesCounter';
+import ErrorBoundary from './containers/ErrorBoundary';
 
-import './app.css';
+import styles from './app.modules.scss';
 
-const GET_MOVIES_URL = 'http://localhost:4000/movies?limit=15';
+const HOME_PAGE_HEADING = 'Find your movie';
+const GET_MOVIES_URL = 'http://localhost:4000/movies?limit=30';
 
 class App extends Component {
     state = {
         movies: [],
-        filteredMovies: [],
-        genres: ['All'],
-        activeGenre: 'All'
+        filteredMovies: []
     };
 
     componentDidMount() {
@@ -30,42 +41,24 @@ class App extends Component {
             .catch(error => this.errorHandler(error));
     }
 
-    changeGenre = (genre) => {
-        this.setState(state => ({
-            activeGenre: genre
-        }));
+    searchMovies = value => console.log(`We are searching movies for you by this search request - ${value}!`);
 
-        this.filterMoviesList(genre);
-    };
+    openAddMovieModal = () => console.log('New movie might be successfully added!');
 
-    processResponse(response) {
-        this.extractAllGenres(response);
-        this.saveMoviesList(response);
-    }
+    errorHandler = error => console.error(`We did not manage to get movies due to: ${error.message}`);
 
-    errorHandler(error) {
-        console.error('We did not manage to get movies due to:', error.message);
-    }
+    processResponse = response => this.saveMoviesList(response);
 
-    extractAllGenres(response) {
-        const {data} = response;
-        const genres = _.uniq(_.flatten(_.map(data, movie => movie.genres)));
-
-        this.setState((state) => ({
-            genres: _.concat(state.genres, genres)
-        }));
-    }
-
-    saveMoviesList(response) {
+    saveMoviesList = response => {
         const {data} = response;
 
         this.setState(() => ({
             movies: data,
             filteredMovies: data
         }));
-    }
+    };
 
-    filterMoviesList(genre) {
+    filterMoviesListByGenre = genre => {
         if (genre !== 'All') {
             const {movies} = this.state;
             const filteredMovies = _.filter(movies, movie => _.includes(movie.genres, genre));
@@ -78,16 +71,57 @@ class App extends Component {
                 filteredMovies: state.movies
             }));
         }
-    }
+    };
 
-    render() {
-        const {genres, activeGenre, filteredMovies} = this.state;
+    filterMoviesListBySort = sort => {
+        const {movies} = this.state;
+        let filteredMovies = [];
+
+        if (sort === 'Title') {
+            filteredMovies = _.sortBy(movies, ['title']);
+        } else if (sort === 'Release Date') {
+            filteredMovies = _.sortBy(movies, ['release_date']);
+        }
+
+        this.setState(() => ({
+            filteredMovies
+        }));
+    };
+
+    render = () => {
+        const {filteredMovies} = this.state;
 
         return (
-            <div className='container'>
-                <GenreToggle genres={genres} activeGenre={activeGenre} changeGenre={this.changeGenre}/>
-                <MoviesCounter amount={filteredMovies.length}/>
-                <MoviesList movies={filteredMovies}/>
+            <div className={styles['container']}>
+                <div className={styles['wrapper']}>
+                    <Header>
+                        <div className={styles['upper-line']}>
+                            <Logo />
+                            <Button value='+ Add Movie' clickHandler={this.openAddMovieModal}/>
+                        </div>
+                        <PageHeading text={HOME_PAGE_HEADING}/>
+                        <SearchLine submitHandler={this.searchMovies}/>
+                    </Header>
+                    <Main>
+                        <ErrorBoundary>
+                            <section className={styles['filter-line']}>
+                                <GenresToggle changeHandler={this.filterMoviesListByGenre}/>
+                                <SortingToggle submitHandler={this.filterMoviesListBySort}/>
+                            </section>
+                            <MoviesCounter amount={filteredMovies.length}/>
+                            <MoviesList movies={filteredMovies}/>
+                        </ErrorBoundary>
+                    </Main>
+                    <Footer>
+                        <Logo />
+                    </Footer>
+                </div>
+                <aside className={styles['sidebar']}>
+                    <Sidebar>
+                        <DetailsList />
+                        <ColorPallete />
+                    </Sidebar>
+                </aside>
             </div>
         );
     }
