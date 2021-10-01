@@ -25,6 +25,7 @@ body {
 }
 
 .wrapper {
+    position: relative;
     flex: 0 0 960px;
     display: flex;
     flex-flow: column nowrap;
@@ -50,8 +51,28 @@ body {
     }
 }
 
+.heading {
+    margin: 20px 0 0;
+    padding: 0 0 0 56px;
+}
+
 .filter-line {
     display: flex;
     flex-flow: row nowrap;
+}
+
+.modal-icon {
+    border-radius: 50%;
+}
+
+.modal-text {
+    margin: 20px 0 0;
+    padding: 0 130px;
+}
+
+.modal-button {
+    display: flex;
+    justify-content: end;
+    padding: 30px 45px 0;
 }
 

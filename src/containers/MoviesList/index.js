@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import MovieItem from './MoviesItem';
 import styles from './movieslist.modules.scss';
 
-const MoviesList = ({movies}) => {
+const MoviesList = ({movies, deleteHandler, editHandler}) => {
     return (
         <div className={styles['movies-list']}>
             <div className={styles['movies-list__container']}>
                 {
-                    movies.map(movie => <MovieItem data={movie} key={movie.id} />)
+                    movies.map(movie => <MovieItem data={movie} key={movie.id} deleteHandler={deleteHandler} editHandler={editHandler} />)
                 }
             </div>
         </div>
