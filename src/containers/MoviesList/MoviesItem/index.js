@@ -24,6 +24,7 @@ const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, delet
 
 MovieItem.propTypes = {
     data: PropTypes.shape({
+        id: PropTypes.number,
         poster_path: PropTypes.string,
         title: PropTypes.string,
         release_date: PropTypes.string,

@@ -14,7 +14,8 @@
         opacity: 0.6;
         text-transform: uppercase;
 
-        &--active {
+        &--active,
+        &--active-revers {
             position: relative;
             opacity: 1;
 
@@ -27,6 +28,16 @@
                 border-left: 4px solid transparent;
                 border-right: 4px solid transparent;
                 border-top: 8px solid #F65261;
+                border-bottom: none;
+            }
+        }
+
+        &--active-revers {
+            &:after {
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-bottom: 8px solid #F65261;
+                border-top: none;
             }
         }
     }

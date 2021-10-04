@@ -73,7 +73,7 @@ class App extends Component {
 
     openEditMovieModal = id => this.setState(state => ({
         isEditMovieModalOpen: true,
-        editMovie: state.movies.filter(movie => movie.id === id)[0]
+        editMovie: state.movies.find(movie => movie.id === id)
     }));
 
     closeEditMovieModal = () => this.setState(() => ({
@@ -236,14 +236,15 @@ class App extends Component {
         }
     };
 
-    filterMoviesListBySort = sort => {
+    filterMoviesListBySort = (sort, reverse) => {
         const { movies } = this.state;
         let filteredMovies = [];
+        let order = reverse ? ['desc'] : ['asc'];
 
         if (sort === 'Title') {
-            filteredMovies = _.sortBy(movies, ['title']);
+            filteredMovies = _.orderBy(movies, ['title'], order);
         } else if (sort === 'Release Date') {
-            filteredMovies = _.sortBy(movies, ['release_date']);
+            filteredMovies = _.orderBy(movies, ['release_date'], order);
         }
 
         this.setState(() => ({
