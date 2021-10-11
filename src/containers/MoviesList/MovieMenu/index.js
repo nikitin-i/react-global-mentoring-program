@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import styles from './moviemenu.modules.scss';
 
-const MENU_ITEMS = ['Edit', 'Delete'];
-
-const MovieMenu = () => {
+const MovieMenu = ({id, deleteHandler, editHandler}) => {
     const [submenu, setSubmenu] = useState(false);
 
     const openSubmenu = () => setSubmenu(true);
+
     const closeSubmenu = (e) => {
         e.stopPropagation();
 
         setSubmenu(false);
+    };
+
+    const deleteMovie = (e) => {
+        closeSubmenu(e);
+        deleteHandler(id);
+    };
+    const editMovie = (e) => {
+        closeSubmenu(e);
+        editHandler(id)
     };
 
     const classList = submenu ? `${styles['movie-menu__list']} ${styles['movie-menu__list--active']}` : styles['movie-menu__list'];
@@ -25,12 +34,17 @@ const MovieMenu = () => {
             </div>
             <div className={classList}>
                 <span className={styles['movie-menu__close']} onClick={closeSubmenu}>X</span>
-                {
-                    MENU_ITEMS.map(item => <p className={styles['movie-menu__item']} key={item}>{item}</p>)
-                }
+                <p className={styles['movie-menu__item']} onClick={editMovie}>Edit</p>
+                <p className={styles['movie-menu__item']} onClick={deleteMovie}>Delete</p>
             </div>
         </div>
     );
+};
+
+MovieMenu.propTypes = {
+    id: PropTypes.number.isRequired,
+    deleteHandler: PropTypes.func.isRequired,
+    editHandler: PropTypes.func.isRequired
 };
 
 export default MovieMenu;

@@ -4,19 +4,19 @@ import PropTypes from 'prop-types';
 import MovieMenu from '../MovieMenu';
 import styles from './moviesitem.modules.scss';
 
-const MovieItem = ({data: {poster_path, title, release_date, tagline}}) => {
+const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler}) => {
     release_date = release_date.slice(0, 4);
 
     return (
         <section className={styles['movie-item']}>
-            <img className={styles['movie-item__poster']} src={poster_path} />
+            <img className={styles['movie-item__poster']} src={poster_path} alt='poster image'/>
             <div className={styles['movie-item__info']}>
                 <h3 className={styles['movie-item__title']}>{title}</h3>
                 <div className={styles['movie-item__release']}>{release_date}</div>
                 <span className={styles['movie-item__tagline']}>{tagline}</span>
             </div>
             <div className={styles['movie-item__menu']}>
-                <MovieMenu />
+                <MovieMenu id={id} deleteHandler={deleteHandler} editHandler={editHandler}/>
             </div>
         </section>
     );
@@ -24,6 +24,7 @@ const MovieItem = ({data: {poster_path, title, release_date, tagline}}) => {
 
 MovieItem.propTypes = {
     data: PropTypes.shape({
+        id: PropTypes.number,
         poster_path: PropTypes.string,
         title: PropTypes.string,
         release_date: PropTypes.string,
