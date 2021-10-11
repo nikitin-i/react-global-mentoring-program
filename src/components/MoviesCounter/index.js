@@ -1,19 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+
+import { moviesContext } from '../../context/moviesContext';
 
 import styles from './moviescounter.modules.scss';
 
-const MoviesCounter = ({amount}) => {
-    const ending = `${amount > 1 ? 'movies' : 'movie'} found`;
+const MoviesCounter = () => {
+    const movies = useContext(moviesContext);
+    const ending = `${movies.length > 1 ? 'movies' : 'movie'} found`;
 
     return (<p className={styles['movies-counter']}>
-        <span className={styles['movies-counter__amount']}>{amount}</span>
+        <span className={styles['movies-counter__amount']}>{movies.length}</span>
         {ending}
     </p>);
-};
-
-MoviesCounter.propTypes = {
-    amount: PropTypes.number.isRequired
 };
 
 export default MoviesCounter;

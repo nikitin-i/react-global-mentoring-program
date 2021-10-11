@@ -1,0 +1,55 @@
+.movie-details {
+    display: flex;
+    flex-flow: row nowrap;
+
+    &__poster {
+        flex: 0 0 140px;
+        height: 210px;
+        width: auto;
+    }
+
+    &__info {
+        padding: 0 30px;
+    }
+
+    &__heading {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+
+    &__rating {
+        margin: 0 0 12px 20px;
+        padding: 6px;
+        border: 1px solid #CCCCCC;
+        border-radius: 50%;
+        color: #FFFFFF;
+    }
+
+    &__genres {
+        margin: 0;
+        font-size: 12px;
+        line-height: 14px;
+        color: #FFFFFF;
+    }
+
+    &__extra-info {
+        color: #F65261;
+        font-size: 18px;
+        line-height: 21px;
+        padding: 10px 0;
+    }
+
+    &__date {
+        margin: 0 20px 0 0;
+    }
+
+    &__description {
+        height: 98px;
+        margin: 0;
+        color: #FFFFFF;
+        font-size: 14px;
+        line-height: 16px;
+        overflow: hidden;
+    }
+}
