@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import Header from './components/Header';
@@ -12,6 +12,7 @@ import SearchLine from './containers/SearchLine';
 import DetailsList from './containers/DetailsList';
 import ColorPallete from './components/ColorPallete';
 import MoviesList from './containers/MoviesList';
+import MovieDetails from './containers/MoviesList/MovieDetails';
 import GenresToggle from './containers/GenresToggle';
 import SortingToggle from './containers/SortingToggle';
 import MoviesCounter from './components/MoviesCounter';
@@ -19,6 +20,8 @@ import ErrorBoundary from './containers/ErrorBoundary';
 
 import InfoModal from './modals/InfoModal';
 import MovieItemModal from './modals/MovieItemModal';
+
+import { moviesContext } from './context/moviesContext';
 
 import styles from './app.modules.scss';
 import checkmark from './assets/images/checkmark.png';
@@ -30,57 +33,63 @@ const DELETE_MOVIE_CONFIRMATION_MODAL_HEADING = 'Delete movie';
 const DELETE_MOVIE_CONFIRMATION_MODAL_TEXT = 'Are you sure you want to delete this movie?';
 const MOVIES_SERVER_URL = 'http://localhost:4000/movies';
 
-class App extends Component {
-    state = {
+const App = () => {
+    const initialState = {
         movies: [],
         filteredMovies: [],
         deleteMovieId: '',
         editMovie: '',
+        activeMovie: {},
         isAddMovieCongratsModalOpen: false,
         isDeleteMovieConfirmModalOpen: false,
         isAddMovieModalOpen: false,
         isEditMovieModalOpen: false
     };
 
-    componentDidMount() {
-        this.getAllMovies();
-    }
+    let [state, setState] = useState(initialState);
 
-    openAddMovieCongratsModal = () => this.setState(() => ({
-        isAddMovieCongratsModalOpen: true
-    }));
+    useEffect(() => {
+        getAllMovies();
+    }, []);
 
-    closeAddMovieCongratsModal = () => this.setState(() => ({
+    const closeAddMovieCongratsModal = () => setState({
+        ...state,
         isAddMovieCongratsModalOpen: false
-    }));
+    });
 
-    openDeleteMovieConfirmationModal = id => this.setState(() => ({
+    const openDeleteMovieConfirmationModal = id => setState({
+        ...state,
         isDeleteMovieConfirmModalOpen: true,
         deleteMovieId: id
-    }));
+    });
 
-    closeDeleteMovieConfirmationModal = () => this.setState(() => ({
+    const closeDeleteMovieConfirmationModal = () => setState({
+        ...state,
         isDeleteMovieConfirmModalOpen: false
-    }));
+    });
 
-    openAddMovieModal = () => this.setState(() => ({
+    const openAddMovieModal = () => setState({
+        ...state,
         isAddMovieModalOpen: true
-    }));
+    });
 
-    closeAddMovieModal = () => this.setState(() => ({
+    const closeAddMovieModal = () => setState({
+        ...state,
         isAddMovieModalOpen: false
-    }));
+    });
 
-    openEditMovieModal = id => this.setState(state => ({
+    const openEditMovieModal = id => setState({
+        ...state,
         isEditMovieModalOpen: true,
         editMovie: state.movies.find(movie => movie.id === id)
-    }));
+    });
 
-    closeEditMovieModal = () => this.setState(() => ({
+    const closeEditMovieModal = () => setState({
+        ...state,
         isEditMovieModalOpen: false
-    }));
+    });
 
-    getAllMovies = () => {
+    const getAllMovies = () => {
         fetch(`${MOVIES_SERVER_URL}?limit=30`)
             .then(response => {
                 if (response.ok) {
@@ -89,11 +98,11 @@ class App extends Component {
 
                 throw new Error('Server response error');
             })
-            .then(response => this.updateMoviesList(response, 'update'))
-            .catch(error => this.errorHandler(error));
+            .then(response => updateMoviesList(response, 'update'))
+            .catch(error => errorHandler(error));
     };
 
-    addMovieItem = movie => {
+    const addMovieItem = movie => {
         fetch(MOVIES_SERVER_URL, {
             method: 'POST',
             headers: {
@@ -109,11 +118,11 @@ class App extends Component {
 
                 throw new Error('Movie has not been added');
             })
-            .then(response => this.addMovieItemSuccessHandler(response))
-            .catch(error => this.errorHandler(error));
+            .then(response => addMovieItemSuccessHandler(response))
+            .catch(error => errorHandler(error));
     };
 
-    editMovieItem = movie => {
+    const editMovieItem = movie => {
         fetch(MOVIES_SERVER_URL, {
             method: 'PUT',
             headers: {
@@ -129,73 +138,70 @@ class App extends Component {
 
                 throw new Error('Movie has not been edited');
             })
-            .then(response => this.editMovieItemSuccessHandler(response))
-            .catch(error => this.errorHandler(error));
+            .then(response => editMovieItemSuccessHandler(response))
+            .catch(error => errorHandler(error));
     };
 
-    deleteMovieItem = id => {
+    const deleteMovieItem = id => {
         fetch(`${MOVIES_SERVER_URL}/${id}`, {
             method: 'DELETE'
         })
             .then(response => {
                 if (response.ok) {
-                    return this.deleteMovieItemSuccessHandler();
+                    return deleteMovieItemSuccessHandler();
                 }
 
                 throw new Error('Movie has not been deleted');
             })
-            .catch(error => this.errorHandler(error));
+            .catch(error => errorHandler(error));
     };
 
-    errorHandler = error => console.error(`We did not manage to process it due to: ${error.message}`);
+    const errorHandler = error => console.error(`We did not manage to process it due to: ${error.message}`);
 
-    deleteMovieItemHandler = () => {
-        this.closeDeleteMovieConfirmationModal();
-        this.deleteMovieItem(this.state.deleteMovieId);
+    const deleteMovieItemHandler = () => {
+        deleteMovieItem(state.deleteMovieId);
     };
 
-    addMovieItemSuccessHandler = movie => {
-        this.closeAddMovieModal();
-        this.openAddMovieCongratsModal();
-        this.updateMoviesList(movie, 'add');
+    const addMovieItemSuccessHandler = movie => {
+        updateMoviesList(movie, 'add');
     };
 
-    editMovieItemSuccessHandler = movie => {
-        this.closeEditMovieModal();
-        this.updateMoviesList(movie, 'edit');
+    const editMovieItemSuccessHandler = movie => {
+        updateMoviesList(movie, 'edit');
     };
 
-    deleteMovieItemSuccessHandler = () => {
-        this.closeDeleteMovieConfirmationModal();
-        this.updateMoviesList(this.state.deleteMovieId, 'delete');
-
-        this.setState(() => ({
-            deleteMovieId: ''
-        }));
+    const deleteMovieItemSuccessHandler = () => {
+        updateMoviesList(state.deleteMovieId, 'delete');
     };
 
-    updateMoviesList = (data, mode) => {
+    const updateMoviesList = (data, mode) => {
         switch(mode) {
             case 'add':
-                this.setState(state => ({
+                setState({
+                    ...state,
+                    isAddMovieModalOpen: false,
+                    isAddMovieCongratsModalOpen: true,
                     movies: [...state.movies, data],
                     filteredMovies: [...state.movies, data]
-                }));
+                });
 
                 break;
 
             case 'delete':
-                const filteredMovies = this.state.movies.filter(movie => movie.id !== data);
+                const filteredMovies = state.movies.filter(movie => movie.id !== data);
 
-                this.setState(() => ({
+                setState({
+                    ...state,
+                    isDeleteMovieConfirmModalOpen: false,
                     movies: filteredMovies,
-                    filteredMovies
-                }));
+                    filteredMovies,
+                    deleteMovieId: ''
+                });
 
                 break;
 
             case 'edit':
-                const mappedMovies = this.state.movies.map(movie => {
+                const mappedMovies = state.movies.map(movie => {
                     if (movie.id === data.id) {
                         return data;
                     }
@@ -203,60 +209,75 @@ class App extends Component {
                     return movie;
                 });
 
-                this.setState(() => ({
+                setState({
+                    ...state,
+                    isEditMovieModalOpen: false,
                     movies: mappedMovies,
                     filteredMovies: mappedMovies
-                }));
+                });
 
                 break;
 
             case 'update':
-                this.setState(() => ({
+                setState({
+                    ...state,
                     movies: data.data,
                     filteredMovies: data.data
-                }));
+                });
 
                 break;
         }
 
     };
 
-    filterMoviesListByGenre = genre => {
+    const filterMoviesListByGenre = genre => {
         if (genre !== 'All') {
-            const { movies } = this.state;
-            const filteredMovies = _.filter(movies, movie => _.includes(movie.genres, genre));
+            const filteredMovies = _.filter(state.movies, movie => _.includes(movie.genres, genre));
 
-            this.setState(() => ({
+            setState({
+                ...state,
                 filteredMovies
-            }));
+            });
         } else {
-            this.setState(state => ({
+            setState({
+                ...state,
                 filteredMovies: state.movies
-            }));
+            });
         }
     };
 
-    filterMoviesListBySort = (sort, reverse) => {
-        const { movies } = this.state;
+    const filterMoviesListBySort = (sort, reverse) => {
         let filteredMovies = [];
         let order = reverse ? ['desc'] : ['asc'];
 
         if (sort === 'Title') {
-            filteredMovies = _.orderBy(movies, ['title'], order);
+            filteredMovies = _.orderBy(state.movies, ['title'], order);
         } else if (sort === 'Release Date') {
-            filteredMovies = _.orderBy(movies, ['release_date'], order);
+            filteredMovies = _.orderBy(state.movies, ['release_date'], order);
         }
 
-        this.setState(() => ({
+        setState({
+            ...state,
             filteredMovies
-        }));
+        });
     };
 
-    searchMovies = value => this.setState(state => ({
+    const searchMovies = value => setState({
+        ...state,
         filteredMovies: state.movies.filter(({title}) => title.toLowerCase().includes(value.toLowerCase()))
-    }));
+    });
 
-    renderMovieAddedCongrats = () => (
+    const showMovieDetails = id => setState({
+        ...state,
+        activeMovie: state.movies.find(movie => movie.id === id)
+    });
+
+    const hideMovieDetails = () => setState({
+        ...state,
+        activeMovie: {}
+    });
+
+    const renderMovieAddedCongrats = () => (
         <>
             <img className={styles['modal-icon']} src={checkmark} alt='modal icon'/>
             <MainHeading text={ADD_MOVIE_CONGRATS_MODAL_HEADING} />
@@ -266,71 +287,74 @@ class App extends Component {
         </>
     );
 
-    renderMovieDeleteConfirmation = () => (
+    const renderMovieDeleteConfirmation = () => (
         <>
             <MainHeading text={DELETE_MOVIE_CONFIRMATION_MODAL_HEADING} />
             <p className={styles['modal-text']}>
                 {DELETE_MOVIE_CONFIRMATION_MODAL_TEXT}
             </p>
             <div className={styles['modal-button']}>
-                <Button clickHandler={this.deleteMovieItemHandler} value='Confirm' />
+                <Button clickHandler={deleteMovieItemHandler} value='Confirm' />
             </div>
         </>
     );
 
-    render = () => {
-        const {
-            filteredMovies,
-            isAddMovieCongratsModalOpen,
-            isDeleteMovieConfirmModalOpen,
-            isAddMovieModalOpen,
-            isEditMovieModalOpen,
-            editMovie
-        } = this.state;
-
-        return (
-            <div className={styles['container']}>
-                <div className={styles['wrapper']}>
-                    <Header>
-                        <div className={styles['upper-line']}>
-                            <Logo />
-                            <Button value='+ Add Movie' clickHandler={this.openAddMovieModal}/>
-                        </div>
-                        <div className={styles['heading']}>
-                            <MainHeading text={HOME_PAGE_HEADING}/>
-                        </div>
-                        <SearchLine submitHandler={this.searchMovies}/>
-                    </Header>
+    return (
+        <div className={styles['container']}>
+            <div className={styles['wrapper']}>
+                {
+                    state.activeMovie.id ? (
+                        <Header>
+                            <div className={styles['upper-line']}>
+                                <Logo />
+                                <Button value='X' clickHandler={hideMovieDetails}/>
+                            </div>
+                            <MovieDetails movie={state.activeMovie} />
+                        </Header>
+                    ) : (
+                        <Header>
+                            <div className={styles['upper-line']}>
+                                <Logo />
+                                <Button value='+ Add Movie' clickHandler={openAddMovieModal}/>
+                            </div>
+                            <div className={styles['heading']}>
+                                <MainHeading text={HOME_PAGE_HEADING}/>
+                            </div>
+                            <SearchLine submitHandler={searchMovies}/>
+                        </Header>
+                    )
+                }
+                <moviesContext.Provider value={state.filteredMovies}>
                     <Main>
                         <ErrorBoundary>
                             <section className={styles['filter-line']}>
-                                <GenresToggle changeHandler={this.filterMoviesListByGenre}/>
-                                <SortingToggle submitHandler={this.filterMoviesListBySort}/>
+                                <GenresToggle changeHandler={filterMoviesListByGenre}/>
+                                <SortingToggle submitHandler={filterMoviesListBySort}/>
                             </section>
-                            <MoviesCounter amount={filteredMovies.length}/>
+                            <MoviesCounter />
                             <MoviesList
-                                movies={filteredMovies}
-                                deleteHandler={this.openDeleteMovieConfirmationModal}
-                                editHandler={this.openEditMovieModal} />
+                                deleteHandler={openDeleteMovieConfirmationModal}
+                                editHandler={openEditMovieModal}
+                                clickHandler={showMovieDetails} />
                         </ErrorBoundary>
                     </Main>
-                    <Footer>
-                        <Logo />
-                    </Footer>
-                    {isAddMovieCongratsModalOpen && <InfoModal render={this.renderMovieAddedCongrats} closeHandler={this.closeAddMovieCongratsModal} />}
-                    {isDeleteMovieConfirmModalOpen && <InfoModal render={this.renderMovieDeleteConfirmation} closeHandler={this.closeDeleteMovieConfirmationModal} />}
-                    {isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={this.closeAddMovieModal} submitHandler={this.addMovieItem} />}
-                    {isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={this.closeEditMovieModal} submitHandler={this.editMovieItem} movie={editMovie} />}
-                </div>
-                <aside className={styles['sidebar']}>
-                    <Sidebar>
-                        <DetailsList />
-                        <ColorPallete />
-                    </Sidebar>
-                </aside>
+                </moviesContext.Provider>
+                <Footer>
+                    <Logo />
+                </Footer>
+                {state.isAddMovieCongratsModalOpen && <InfoModal render={renderMovieAddedCongrats} closeHandler={closeAddMovieCongratsModal} />}
+                {state.isDeleteMovieConfirmModalOpen && <InfoModal render={renderMovieDeleteConfirmation} closeHandler={closeDeleteMovieConfirmationModal} />}
+                {state.isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={closeAddMovieModal} submitHandler={addMovieItem} />}
+                {state.isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={closeEditMovieModal} submitHandler={editMovieItem} movie={state.editMovie} />}
             </div>
-        );
-    }
+            <aside className={styles['sidebar']}>
+                <Sidebar>
+                    <DetailsList />
+                    <ColorPallete />
+                </Sidebar>
+            </aside>
+        </div>
+    );
 }
 
 export default App;

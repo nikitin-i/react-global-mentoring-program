@@ -6,7 +6,11 @@ import styles from './moviemenu.modules.scss';
 const MovieMenu = ({id, deleteHandler, editHandler}) => {
     const [submenu, setSubmenu] = useState(false);
 
-    const openSubmenu = () => setSubmenu(true);
+    const openSubmenu = (e) => {
+        e.stopPropagation();
+
+        setSubmenu(true);
+    };
 
     const closeSubmenu = (e) => {
         e.stopPropagation();

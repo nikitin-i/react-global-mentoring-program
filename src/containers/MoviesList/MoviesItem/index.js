@@ -4,11 +4,15 @@ import PropTypes from 'prop-types';
 import MovieMenu from '../MovieMenu';
 import styles from './moviesitem.modules.scss';
 
-const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler}) => {
+const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler, clickHandler}) => {
+    const movieItemClickHandler = () => {
+        clickHandler(id);
+    };
+
     release_date = release_date.slice(0, 4);
 
     return (
-        <section className={styles['movie-item']}>
+        <section className={styles['movie-item']} onClick={movieItemClickHandler}>
             <img className={styles['movie-item__poster']} src={poster_path} alt='poster image'/>
             <div className={styles['movie-item__info']}>
                 <h3 className={styles['movie-item__title']}>{title}</h3>
@@ -29,7 +33,10 @@ MovieItem.propTypes = {
         title: PropTypes.string,
         release_date: PropTypes.string,
         tagline: PropTypes.string
-    })
+    }),
+    deleteHandler: PropTypes.func.isRequired,
+    editHandler: PropTypes.func.isRequired,
+    clickHandler: PropTypes.func.isRequired
 };
 
 MovieItem.defaultProps = {
