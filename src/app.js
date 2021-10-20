@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import Header from './components/Header';
 import Main from './components/Main';
@@ -21,6 +22,7 @@ import ErrorBoundary from './containers/ErrorBoundary';
 import InfoModal from './modals/InfoModal';
 import MovieItemModal from './modals/MovieItemModal';
 
+import { closeAllModals, deleteMovieAsync } from './store/actions';
 import { moviesContext } from './context/moviesContext';
 
 import styles from './app.modules.scss';
@@ -33,7 +35,7 @@ const DELETE_MOVIE_CONFIRMATION_MODAL_HEADING = 'Delete movie';
 const DELETE_MOVIE_CONFIRMATION_MODAL_TEXT = 'Are you sure you want to delete this movie?';
 const MOVIES_SERVER_URL = 'http://localhost:4000/movies';
 
-const App = () => {
+const App = (props) => {
     const initialState = {
         movies: [],
         filteredMovies: [],
@@ -48,34 +50,15 @@ const App = () => {
 
     let [state, setState] = useState(initialState);
 
-    useEffect(() => {
-        getAllMovies();
-    }, []);
-
-    const closeAddMovieCongratsModal = () => setState({
-        ...state,
-        isAddMovieCongratsModalOpen: false
-    });
-
     const openDeleteMovieConfirmationModal = id => setState({
         ...state,
         isDeleteMovieConfirmModalOpen: true,
         deleteMovieId: id
     });
 
-    const closeDeleteMovieConfirmationModal = () => setState({
-        ...state,
-        isDeleteMovieConfirmModalOpen: false
-    });
-
     const openAddMovieModal = () => setState({
         ...state,
         isAddMovieModalOpen: true
-    });
-
-    const closeAddMovieModal = () => setState({
-        ...state,
-        isAddMovieModalOpen: false
     });
 
     const openEditMovieModal = id => setState({
@@ -84,22 +67,8 @@ const App = () => {
         editMovie: state.movies.find(movie => movie.id === id)
     });
 
-    const closeEditMovieModal = () => setState({
-        ...state,
-        isEditMovieModalOpen: false
-    });
-
-    const getAllMovies = () => {
-        fetch(`${MOVIES_SERVER_URL}?limit=30`)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-
-                throw new Error('Server response error');
-            })
-            .then(response => updateMoviesList(response, 'update'))
-            .catch(error => errorHandler(error));
+    const closeModal = () => {
+        props.closeAllModals();
     };
 
     const addMovieItem = movie => {
@@ -142,24 +111,13 @@ const App = () => {
             .catch(error => errorHandler(error));
     };
 
-    const deleteMovieItem = id => {
-        fetch(`${MOVIES_SERVER_URL}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    return deleteMovieItemSuccessHandler();
-                }
-
-                throw new Error('Movie has not been deleted');
-            })
-            .catch(error => errorHandler(error));
-    };
-
     const errorHandler = error => console.error(`We did not manage to process it due to: ${error.message}`);
 
     const deleteMovieItemHandler = () => {
-        deleteMovieItem(state.deleteMovieId);
+        const { deleteMovieAsync, closeAllModals } = props;
+
+        deleteMovieAsync(props.deleteMovieId);
+        closeAllModals();
     };
 
     const addMovieItemSuccessHandler = movie => {
@@ -168,10 +126,6 @@ const App = () => {
 
     const editMovieItemSuccessHandler = movie => {
         updateMoviesList(movie, 'edit');
-    };
-
-    const deleteMovieItemSuccessHandler = () => {
-        updateMoviesList(state.deleteMovieId, 'delete');
     };
 
     const updateMoviesList = (data, mode) => {
@@ -342,10 +296,10 @@ const App = () => {
                 <Footer>
                     <Logo />
                 </Footer>
-                {state.isAddMovieCongratsModalOpen && <InfoModal render={renderMovieAddedCongrats} closeHandler={closeAddMovieCongratsModal} />}
-                {state.isDeleteMovieConfirmModalOpen && <InfoModal render={renderMovieDeleteConfirmation} closeHandler={closeDeleteMovieConfirmationModal} />}
-                {state.isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={closeAddMovieModal} submitHandler={addMovieItem} />}
-                {state.isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={closeEditMovieModal} submitHandler={editMovieItem} movie={state.editMovie} />}
+                {props.isAddMovieCongratsModalOpen && <InfoModal render={renderMovieAddedCongrats} closeHandler={closeModal} />}
+                {props.isDeleteMovieConfirmModalOpen && <InfoModal render={renderMovieDeleteConfirmation} closeHandler={closeModal} />}
+                {props.isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={closeModal} submitHandler={addMovieItem} />}
+                {props.isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={closeModal} submitHandler={editMovieItem} movie={props.editMovie} />}
             </div>
             <aside className={styles['sidebar']}>
                 <Sidebar>
@@ -357,4 +311,18 @@ const App = () => {
     );
 }
 
-export default App;
+const mapStateToProps = ({movies, modals}) => ({
+    editMovie: movies.editMovie,
+    deleteMovieId: movies.deleteMovieId,
+    isAddMovieCongratsModalOpen: modals.isAddMovieCongratsModalOpen,
+    isDeleteMovieConfirmModalOpen: modals.isDeleteMovieConfirmModalOpen,
+    isAddMovieModalOpen: modals.isAddMovieModalOpen,
+    isEditMovieModalOpen: modals.isEditMovieModalOpen
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    closeAllModals: () => dispatch(closeAllModals()),
+    deleteMovieAsync: (id) => dispatch(deleteMovieAsync(id))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
