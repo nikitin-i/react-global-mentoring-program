@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import styles from './searchline.modules.scss';
 
+import {searchMovie} from '../../store/actions';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 const ENTER_BUTTON_KEY_CODE = 13;
 
-const SearchLine = ({submitHandler}) => {
+const SearchLine = ({searchMovie}) => {
     const [search, setSearch] = useState('');
 
-    const submitSearchRequest = () => submitHandler(search);
+    const submitSearchRequest = () => {
+        searchMovie(search);
+    };
     const changeSearchLine = ({target: {value}}) => setSearch(value);
-    const keyDownHandler = ({keyCode}) => keyCode === ENTER_BUTTON_KEY_CODE && submitHandler(search);
+    const keyDownHandler = ({keyCode}) => keyCode === ENTER_BUTTON_KEY_CODE && searchMovie(search);
 
     return (
         <section className={styles['search-line']} onKeyDown={keyDownHandler}>
@@ -27,8 +30,8 @@ const SearchLine = ({submitHandler}) => {
     );
 };
 
-SearchLine.propTypes = {
-    submitHandler: PropTypes.func.isRequired
-};
+const mapDispatchToProps = (dispatch) => ({
+    searchMovie: str => dispatch(searchMovie(str))
+});
 
-export default SearchLine;
+export default connect(null, mapDispatchToProps)(SearchLine);

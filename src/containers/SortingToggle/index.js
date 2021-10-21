@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
 
+import { changeActiveSorting } from '../../store/actions';
 import style from './sortingtoggle.modules.scss';
 
 const SORT_ROW = 'Sort By:';
 const SORT_ITEMS = ['Title', 'Release Date'];
 
-const SortingToggle = ({submitHandler}) => {
-    const [activeToggle, setActiveToggle] = useState('');
-    const [reverseOrder, setReverseOrder] = useState(false);
-
+const SortingToggle = ({activeSorting, changeActiveSorting}) => {
     const changeActiveToggle = ({target: {id}}) => {
-        if (id !== activeToggle) {
-            setActiveToggle(id);
-            submitHandler(id, false);
-            setReverseOrder(false);
+        if (id !== activeSorting.str) {
+            changeActiveSorting(id, false);
         } else {
-            submitHandler(id, !reverseOrder);
-            setReverseOrder(!reverseOrder);
+            changeActiveSorting(id, !activeSorting.reverse);
         }
     };
 
@@ -26,8 +21,8 @@ const SortingToggle = ({submitHandler}) => {
             <div className={style['sort-toggle__item']}>{SORT_ROW}</div>;
             {
                 SORT_ITEMS.map(item => {
-                    const isReverse = reverseOrder && activeToggle === item ? style['sort-toggle__item--active-revers'] : style['sort-toggle__item--active'];
-                    const classList = activeToggle === item ? `${style['sort-toggle__item']} ${isReverse}` : style['sort-toggle__item'];
+                    const isReverse = activeSorting.reverse && activeSorting.str === item ? style['sort-toggle__item--active-revers'] : style['sort-toggle__item--active'];
+                    const classList = activeSorting.str === item ? `${style['sort-toggle__item']} ${isReverse}` : style['sort-toggle__item'];
 
                     return <div id={item} className={classList} key={item} onClick={changeActiveToggle}>{item}</div>;
                 })
@@ -36,8 +31,12 @@ const SortingToggle = ({submitHandler}) => {
     );
 };
 
-SortingToggle.propTypes = {
-    submitHandler: PropTypes.func.isRequired
-};
+const mapStateToProps = ({movies}) => ({
+    activeSorting: movies.activeSorting
+});
 
-export default SortingToggle;
+const mapDispatchToProps = (dispatch) => ({
+    changeActiveSorting: (str, reverse) => dispatch(changeActiveSorting(str, reverse))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SortingToggle);

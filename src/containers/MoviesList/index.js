@@ -64,8 +64,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 MoviesList.propTypes = {
-    deleteHandler: PropTypes.func.isRequired,
-    editHandler: PropTypes.func.isRequired,
     clickHandler: PropTypes.func.isRequired
 };
 

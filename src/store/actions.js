@@ -5,8 +5,12 @@ import {
     ADD_MOVIE,
     UPDATE_MOVIE,
     DELETE_MOVIE,
+    SEARCH_MOVIE,
+    CHANGE_ACTIVE_GENRE,
+    CHANGE_ACTIVE_SORTING,
     SET_DELETE_MOVIE,
     SET_EDIT_MOVIE,
+    SET_ACTIVE_MOVIE,
     OPEN_ADD_MOVIE_MODAL,
     OPEN_EDIT_MOVIE_MODAL,
     OPEN_DELETE_MOVIE_MODAL,
@@ -34,6 +38,24 @@ export const deleteMovie = (id) => ({
     payload: id
 });
 
+export const searchMovie = (str) => ({
+    type: SEARCH_MOVIE,
+    payload: str
+});
+
+export const changeActiveGenre = (str) => ({
+    type: CHANGE_ACTIVE_GENRE,
+    payload: str
+});
+
+export const changeActiveSorting = (str, reverse) => ({
+    type: CHANGE_ACTIVE_SORTING,
+    payload: {
+        str,
+        reverse
+    }
+});
+
 export const getMoviesAsync = () => (dispatch) => {
     axios
         .get('http://localhost:4000/movies', {
@@ -42,6 +64,30 @@ export const getMoviesAsync = () => (dispatch) => {
             }
         })
         .then(({data: {data:movies}}) => dispatch(getMovies(movies)))
+        .catch(err => console.error(err));
+};
+
+export const addMovieAsync = (movie) => (dispatch) => {
+    axios
+        .post('http://localhost:4000/movies', JSON.stringify(movie), {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(({data:movie}) => dispatch(addMovie(movie)))
+        .catch(err => console.error(err));
+};
+
+export const updateMovieAsync = (movie) => (dispatch) => {
+    axios
+        .put('http://localhost:4000/movies', JSON.stringify(movie), {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(({data:movie}) => dispatch(updateMovie(movie)))
         .catch(err => console.error(err));
 };
 
@@ -59,6 +105,11 @@ export const setDeleteMovie = (id) => ({
 
 export const setEditMovie = (id) => ({
     type: SET_EDIT_MOVIE,
+    payload: id
+});
+
+export const setActiveMovie = (id) => ({
+    type: SET_ACTIVE_MOVIE,
     payload: id
 });
 

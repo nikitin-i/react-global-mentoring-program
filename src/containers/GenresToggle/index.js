@@ -1,23 +1,21 @@
-import React, {useState} from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
 
+import { changeActiveGenre } from '../../store/actions';
 import GenresItem from './GenresItem';
 import styles from './genrestoggle.modules.scss';
 
 const GENRES_LIST = ['All', 'Drama', 'Family', 'Comedy', 'Thriller'];
 
-const GenresToggle = ({changeHandler}) => {
-    const [activeGenre, setActiveGenre] = useState('All');
-
+const GenresToggle = ({activeGenre, changeActiveGenre}) => {
     const chooseActiveGenre = genre => {
-        setActiveGenre(genre);
-        changeHandler(genre);
+        changeActiveGenre(genre);
     };
 
     return (
         <ul className={styles['genre-list']}>
             {
-                GENRES_LIST.map((genre, index) => <GenresItem
+                GENRES_LIST.map((genre) => <GenresItem
                     value={genre}
                     key={genre}
                     active={activeGenre === genre}
@@ -27,8 +25,12 @@ const GenresToggle = ({changeHandler}) => {
     );
 };
 
-GenresToggle.propTypes = {
-    changeHandler: PropTypes.func.isRequired
-};
+const mapStateToProps = ({movies}) => ({
+    activeGenre: movies.activeGenre
+});
 
-export default GenresToggle;
+const mapDispatchToProps = (dispatch) => ({
+    changeActiveGenre: (str) => dispatch(changeActiveGenre(str))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GenresToggle);
