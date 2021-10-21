@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import styles from './searchline.modules.scss';
 
-import {searchMovie} from '../../store/actions';
+import { searchMovie } from '../../store/actions';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 const ENTER_BUTTON_KEY_CODE = 13;
 
-const SearchLine = ({searchMovie}) => {
-    const [search, setSearch] = useState('');
+const SearchLine = ({searchLine, searchMovie}) => {
+    const [search, setSearch] = useState(searchLine);
+
+    useEffect(() => {
+        setSearch(searchLine);
+    }, [searchLine])
 
     const submitSearchRequest = () => {
         searchMovie(search);
@@ -30,8 +34,12 @@ const SearchLine = ({searchMovie}) => {
     );
 };
 
+const mapStateToProps = ({movies}) => ({
+    searchLine: movies.searchLine
+});
+
 const mapDispatchToProps = (dispatch) => ({
     searchMovie: str => dispatch(searchMovie(str))
 });
 
-export default connect(null, mapDispatchToProps)(SearchLine);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchLine);

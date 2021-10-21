@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { filterMovies } from '../../utils/utils';
+
 import {
     GET_MOVIES,
     ADD_MOVIE,
@@ -17,6 +19,7 @@ const initialState = {
     filteredMovies: [],
     activeGenre: 'All',
     activeSorting: {},
+    searchLine: '',
     deleteMovieId: '',
     editMovie: '',
     activeMovie: {}
@@ -28,14 +31,14 @@ const moviesReducer = (state = initialState, action) => {
     switch (type) {
         case GET_MOVIES:
             return {
-                ...state,
+                ...initialState,
                 movies: [...payload],
                 filteredMovies: [...payload]
             };
 
         case ADD_MOVIE:
             return {
-                ...state,
+                ...initialState,
                 movies: [...state.movies, payload],
                 filteredMovies: [...state.movies, payload]
             };
@@ -44,7 +47,7 @@ const moviesReducer = (state = initialState, action) => {
             const updatedMovies = _.map(state.movies, movie => movie.id !== payload.id ? movie : payload);
 
             return {
-                ...state,
+                ...initialState,
                 movies: [...updatedMovies],
                 filteredMovies: [...updatedMovies]
             };
@@ -53,7 +56,7 @@ const moviesReducer = (state = initialState, action) => {
             const filteredMoviesByID = _.filter(state.movies, movie => movie.id !== payload);
 
             return {
-                ...state,
+                ...initialState,
                 filteredMovies: [
                     ...filteredMoviesByID
                 ],
@@ -63,39 +66,23 @@ const moviesReducer = (state = initialState, action) => {
             };
 
         case SEARCH_MOVIE:
-            const filteredMoviesByText = _.filter(state.movies, ({title}) => _.includes(_.lowerCase(title), _.lowerCase(payload)));
-
             return {
                 ...state,
-                filteredMovies: filteredMoviesByText
+                searchLine: payload,
+                filteredMovies: filterMovies(state.movies, payload, state.activeGenre, state.activeSorting)
             };
 
         case CHANGE_ACTIVE_GENRE:
-            let filteredMoviesByGenre = [];
-
-            if (payload !== 'All') {
-                filteredMoviesByGenre = _.filter(state.movies, movie => _.includes(movie.genres, payload));
-            } else {
-                filteredMoviesByGenre = [...state.movies];
-            }
-
             return {
                 ...state,
                 activeGenre: payload,
-                filteredMovies: filteredMoviesByGenre
+                filteredMovies: payload !== 'All' ?
+                    filterMovies(state.movies, state.searchLine, payload, state.activeSorting) :
+                    [...state.movies]
             };
 
         case CHANGE_ACTIVE_SORTING:
             const { str, reverse } = payload;
-
-            let sortedMovies = [];
-            let order = reverse ? ['desc'] : ['asc'];
-
-            if (str === 'Title') {
-                sortedMovies = _.orderBy(state.movies, ['title'], order);
-            } else if (str === 'Release Date') {
-                sortedMovies = _.orderBy(state.movies, ['release_date'], order);
-            }
 
             return {
                 ...state,
@@ -103,7 +90,7 @@ const moviesReducer = (state = initialState, action) => {
                     str,
                     reverse
                 },
-                filteredMovies: sortedMovies
+                filteredMovies: filterMovies(state.movies, state.searchLine, state.activeGenre, payload)
             };
 
         case SET_DELETE_MOVIE:
