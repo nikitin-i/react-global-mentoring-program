@@ -5,8 +5,8 @@ import styles from './logo.modules.scss';
 const LOGO_TEXT_MAIN = 'netflix';
 const LOGO_TEXT_ADDITIONAL = 'roulette';
 
-const Logo = () => (
-    <section className={styles['logo']}>
+const Logo = ({clickHandler}) => (
+    <section className={styles['logo']} onClick={clickHandler}>
         <p className={styles['logo__text']}>
             <span className={styles['logo__text--stress']}>
                 {LOGO_TEXT_MAIN}

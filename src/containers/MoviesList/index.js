@@ -2,27 +2,23 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {
-    getMoviesAsync,
-    setDeleteMovie,
-    setEditMovie,
-    openDeleteMovieModal,
-    openEditMovieModal
-} from '../../store/actions';
+import { openDeleteMovieModal, openEditMovieModal } from '../../store/actions/modalActions';
+import { getMoviesAsync, setDeleteMovie, setEditMovie } from '../../store/actions/moviesActions';
+
 import MovieItem from './MoviesItem';
 import styles from './movieslist.modules.scss';
 
 const MoviesList = ({
                         filteredMovies,
                         clickHandler,
-                        getMovies,
+                        getMoviesAsync,
                         setDeleteMovie,
                         setEditMovie,
                         openDeleteMovieModal,
                         openEditMovieModal
 }) => {
     useEffect(() => {
-        getMovies();
+        getMoviesAsync();
     }, []);
 
     const openDeleteConfirmationModal = (id) => {
@@ -51,20 +47,26 @@ const MoviesList = ({
     );
 };
 
+MoviesList.propTypes = {
+    clickHandler: PropTypes.func.isRequired,
+    filteredMovies: PropTypes.array,
+    getMoviesAsync: PropTypes.func.isRequired,
+    setDeleteMovie: PropTypes.func.isRequired,
+    setEditMovie: PropTypes.func.isRequired,
+    openDeleteMovieModal: PropTypes.func.isRequired,
+    openEditMovieModal: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = ({movies}) => ({
     filteredMovies: movies.filteredMovies
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getMovies: () => dispatch(getMoviesAsync()),
+    getMoviesAsync: (params) => dispatch(getMoviesAsync(params)),
     setDeleteMovie: (id) => dispatch(setDeleteMovie(id)),
     setEditMovie: (movie) => dispatch(setEditMovie(movie)),
     openDeleteMovieModal: (state) => dispatch(openDeleteMovieModal(state)),
     openEditMovieModal: (state) => dispatch(openEditMovieModal(state))
 });
-
-MoviesList.propTypes = {
-    clickHandler: PropTypes.func.isRequired
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesList);

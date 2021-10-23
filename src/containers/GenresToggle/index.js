@@ -1,14 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { changeActiveGenre } from '../../store/actions';
+import { changeActiveGenre } from '../../store/actions/filterActions';
+import { getMoviesAsync } from '../../store/actions/moviesActions';
+
+import { formParamsObj } from '../../utils/utils';
 import GenresItem from './GenresItem';
 import styles from './genrestoggle.modules.scss';
 
 const GENRES_LIST = ['All', 'Drama', 'Family', 'Comedy', 'Thriller'];
 
-const GenresToggle = ({activeGenre, changeActiveGenre}) => {
+const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesAsync, changeActiveGenre}) => {
     const chooseActiveGenre = genre => {
+        getMoviesAsync(formParamsObj(searchLine, genre, activeSorting));
         changeActiveGenre(genre);
     };
 
@@ -25,12 +30,23 @@ const GenresToggle = ({activeGenre, changeActiveGenre}) => {
     );
 };
 
-const mapStateToProps = ({movies}) => ({
-    activeGenre: movies.activeGenre
+GenresToggle.propTypes = {
+    activeSorting: PropTypes.object.isRequired,
+    searchLine: PropTypes.string.isRequired,
+    activeGenre: PropTypes.string.isRequired,
+    getMoviesAsync: PropTypes.func.isRequired,
+    changeActiveGenre: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = ({filters}) => ({
+    activeSorting: filters.activeSorting,
+    searchLine: filters.searchLine,
+    activeGenre: filters.activeGenre
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    changeActiveGenre: (str) => dispatch(changeActiveGenre(str))
+    getMoviesAsync: params => dispatch(getMoviesAsync(params)),
+    changeActiveGenre: genre => dispatch(changeActiveGenre(genre))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenresToggle);

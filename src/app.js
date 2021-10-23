@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Header from './components/Header';
 import Main from './components/Main';
@@ -21,7 +22,9 @@ import ErrorBoundary from './containers/ErrorBoundary';
 import InfoModal from './modals/InfoModal';
 import MovieItemModal from './modals/MovieItemModal';
 
-import { openAddMovieModal, closeAllModals, addMovieAsync, deleteMovieAsync, updateMovieAsync } from './store/actions';
+import { openAddMovieModal, openCongratsMovieModal, closeAllModals } from './store/actions/modalActions';
+import { getMoviesAsync, addMovieAsync, deleteMovieAsync, updateMovieAsync } from './store/actions/moviesActions';
+import { clearAllFilters } from './store/actions/filterActions';
 
 import styles from './app.modules.scss';
 import checkmark from './assets/images/checkmark.png';
@@ -36,14 +39,17 @@ const App = (props) => {
     let [activeMovie, setActiveMovie] = useState({});
 
     const closeModal = () => {
-        props.closeAllModals();
+        const { closeAllModals } = props;
+
+        closeAllModals();
     };
 
     const addMovieItemHandler = movie => {
-        const { addMovieAsync, closeAllModals } = props;
+        const { addMovieAsync, openCongratsMovieModal, closeAllModals } = props;
 
         addMovieAsync(movie);
         closeAllModals();
+        openCongratsMovieModal();
     };
 
     const editMovieItemHandler = movie => {
@@ -58,6 +64,13 @@ const App = (props) => {
 
         deleteMovieAsync(deleteMovieId);
         closeAllModals();
+    };
+
+    const logoClickHandler = () => {
+        const { getMoviesAsync, clearAllFilters } = props;
+
+        getMoviesAsync();
+        clearAllFilters();
     };
 
     const showMovieDetails = id => setActiveMovie(props.filteredMovies.find(movie => movie.id === id));
@@ -93,7 +106,7 @@ const App = (props) => {
                     activeMovie.id ? (
                         <Header>
                             <div className={styles['upper-line']}>
-                                <Logo />
+                                <Logo clickHandler={logoClickHandler} />
                                 <Button value='X' clickHandler={hideMovieDetails}/>
                             </div>
                             <MovieDetails movie={activeMovie} />
@@ -101,8 +114,8 @@ const App = (props) => {
                     ) : (
                         <Header>
                             <div className={styles['upper-line']}>
-                                <Logo />
-                                <Button value='+ Add Movie' clickHandler={props.openAddMovieModal}/>
+                                <Logo clickHandler={logoClickHandler} />
+                                <Button value='+ Add Movie' clickHandler={props.openAddMovieModal} />
                             </div>
                             <div className={styles['heading']}>
                                 <MainHeading text={HOME_PAGE_HEADING}/>
@@ -139,6 +152,24 @@ const App = (props) => {
     );
 }
 
+App.propTypes = {
+    filteredMovies: PropTypes.array.isRequired,
+    editMovie: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    deleteMovieId: PropTypes.string.isRequired,
+    isAddMovieCongratsModalOpen: PropTypes.bool.isRequired,
+    isDeleteMovieConfirmModalOpen: PropTypes.bool.isRequired,
+    isAddMovieModalOpen: PropTypes.bool.isRequired,
+    isEditMovieModalOpen: PropTypes.bool.isRequired,
+    openAddMovieModal: PropTypes.func.isRequired,
+    openCongratsMovieModal: PropTypes.func.isRequired,
+    closeAllModals: PropTypes.func.isRequired,
+    addMovieAsync: PropTypes.func.isRequired,
+    updateMovieAsync: PropTypes.func.isRequired,
+    deleteMovieAsync: PropTypes.func.isRequired,
+    getMoviesAsync: PropTypes.func.isRequired,
+    clearAllFilters: PropTypes.func.isRequired
+};
+
 const mapStateToProps = ({movies, modals}) => ({
     filteredMovies: movies.filteredMovies,
     editMovie: movies.editMovie,
@@ -151,10 +182,13 @@ const mapStateToProps = ({movies, modals}) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     openAddMovieModal: () => dispatch(openAddMovieModal()),
+    openCongratsMovieModal: () => dispatch(openCongratsMovieModal()),
     closeAllModals: () => dispatch(closeAllModals()),
     addMovieAsync: (movie) => dispatch(addMovieAsync(movie)),
     updateMovieAsync: (movie) => dispatch(updateMovieAsync(movie)),
-    deleteMovieAsync: (id) => dispatch(deleteMovieAsync(id))
+    deleteMovieAsync: (id) => dispatch(deleteMovieAsync(id)),
+    getMoviesAsync: () => dispatch(getMoviesAsync()),
+    clearAllFilters: () => dispatch(clearAllFilters())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

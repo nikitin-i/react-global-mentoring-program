@@ -1,19 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { changeActiveSorting } from '../../store/actions';
+import { changeActiveSorting } from '../../store/actions/filterActions';
+import { getMoviesAsync } from '../../store/actions/moviesActions';
+
+import { formParamsObj } from '../../utils/utils';
 import style from './sortingtoggle.modules.scss';
 
 const SORT_ROW = 'Sort By:';
 const SORT_ITEMS = ['Title', 'Release Date'];
 
-const SortingToggle = ({activeSorting, changeActiveSorting}) => {
+const SortingToggle = ({activeSorting, activeGenre, searchLine, getMoviesAsync, changeActiveSorting}) => {
     const changeActiveToggle = ({target: {id}}) => {
+        const sortingObj = {
+            str: id
+        };
+
         if (id !== activeSorting.str) {
-            changeActiveSorting(id, false);
+            sortingObj.reverse = false;
         } else {
-            changeActiveSorting(id, !activeSorting.reverse);
+            sortingObj.reverse = !activeSorting.reverse;
         }
+
+        getMoviesAsync(formParamsObj(searchLine, activeGenre, sortingObj));
+        changeActiveSorting(sortingObj);
     };
 
     return (
@@ -31,12 +42,23 @@ const SortingToggle = ({activeSorting, changeActiveSorting}) => {
     );
 };
 
-const mapStateToProps = ({movies}) => ({
-    activeSorting: movies.activeSorting
+SortingToggle.propTypes = {
+    activeSorting: PropTypes.object.isRequired,
+    searchLine: PropTypes.string.isRequired,
+    activeGenre: PropTypes.string.isRequired,
+    getMoviesAsync: PropTypes.func.isRequired,
+    changeActiveSorting: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = ({filters}) => ({
+    activeSorting: filters.activeSorting,
+    searchLine: filters.searchLine,
+    activeGenre: filters.activeGenre
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    changeActiveSorting: (str, reverse) => dispatch(changeActiveSorting(str, reverse))
+    getMoviesAsync: params => dispatch(getMoviesAsync(params)),
+    changeActiveSorting: obj => dispatch(changeActiveSorting(obj))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SortingToggle);

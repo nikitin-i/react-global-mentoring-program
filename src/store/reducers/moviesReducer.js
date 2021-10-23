@@ -1,15 +1,10 @@
 import _ from 'lodash';
 
-import { filterMovies } from '../../utils/utils';
-
 import {
     GET_MOVIES,
     ADD_MOVIE,
-    SEARCH_MOVIE,
     UPDATE_MOVIE,
     DELETE_MOVIE,
-    CHANGE_ACTIVE_GENRE,
-    CHANGE_ACTIVE_SORTING,
     SET_DELETE_MOVIE,
     SET_EDIT_MOVIE
 } from '../types';
@@ -17,12 +12,8 @@ import {
 const initialState = {
     movies: [],
     filteredMovies: [],
-    activeGenre: 'All',
-    activeSorting: {},
-    searchLine: '',
     deleteMovieId: '',
-    editMovie: '',
-    activeMovie: {}
+    editMovie: ''
 };
 
 const moviesReducer = (state = initialState, action) => {
@@ -63,34 +54,6 @@ const moviesReducer = (state = initialState, action) => {
                 movies: [
                     ...filteredMoviesByID
                 ]
-            };
-
-        case SEARCH_MOVIE:
-            return {
-                ...state,
-                searchLine: payload,
-                filteredMovies: filterMovies(state.movies, payload, state.activeGenre, state.activeSorting)
-            };
-
-        case CHANGE_ACTIVE_GENRE:
-            return {
-                ...state,
-                activeGenre: payload,
-                filteredMovies: payload !== 'All' ?
-                    filterMovies(state.movies, state.searchLine, payload, state.activeSorting) :
-                    [...state.movies]
-            };
-
-        case CHANGE_ACTIVE_SORTING:
-            const { str, reverse } = payload;
-
-            return {
-                ...state,
-                activeSorting: {
-                    str,
-                    reverse
-                },
-                filteredMovies: filterMovies(state.movies, state.searchLine, state.activeGenre, payload)
             };
 
         case SET_DELETE_MOVIE:

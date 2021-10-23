@@ -1,30 +1,29 @@
 import _ from 'lodash';
 
-function filterMovies(movies, search, genre, sort) {
-    let filteredMovies = [...movies];
+function formParamsObj(search, genre, sort) {
+    const query = {};
 
     if (search) {
-        filteredMovies = _.filter(filteredMovies, ({title}) => _.includes(_.lowerCase(title), _.lowerCase(search)));
+        query['search'] = search;
+        query['searchBy'] = 'title';
     }
 
     if (genre && genre !== 'All') {
-        filteredMovies = _.filter(filteredMovies, movie => _.includes(movie.genres, genre));
+        query['filter'] = genre;
     }
 
     if (!_.isEmpty(sort)) {
         const { str, reverse } = sort;
-        const order = reverse ? ['desc'] : ['asc'];
+        const order = reverse ? 'desc' : 'asc';
+        const sortItems = {Title: 'title', 'Release Date': 'release_date'};
 
-        if (str === 'Title') {
-            filteredMovies = _.orderBy(filteredMovies, ['title'], order);
-        } else if (str === 'Release Date') {
-            filteredMovies = _.orderBy(filteredMovies, ['release_date'], order);
-        }
+        query['sortBy'] = sortItems[str];
+        query['sortOrder'] = order;
     }
 
-    return filteredMovies;
+    return query;
 }
 
 export {
-    filterMovies
+    formParamsObj
 };
