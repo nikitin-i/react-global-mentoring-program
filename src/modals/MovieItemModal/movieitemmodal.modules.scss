@@ -26,7 +26,7 @@
         transform: translate(-50%, -50%);
         display: flex;
         flex-flow: column nowrap;
-        background-color: #232323;
+        background-color: #272727;
     }
 
     &__content {
@@ -61,6 +61,7 @@
     &__label,
     &__label-wide,
     &__label-short {
+        position: relative;
         margin: 0 0 25px 0;
     }
 
@@ -120,5 +121,14 @@
                 border: 1px solid #F65261;
             }
         }
+    }
+
+    &__error-message {
+        position: absolute;
+        top: 0;
+        right: 24px;
+        font-size: 12px;
+        line-height: 14px;
+        color: #F6AF65;
     }
 }

@@ -53,9 +53,9 @@ const mapStateToProps = ({filters}) => ({
     activeGenre: filters.activeGenre
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    getMoviesAsync: params => dispatch(getMoviesAsync(params)),
-    searchMovie: str => dispatch(searchMovie(str))
-});
+const mapDispatchToProps = {
+    getMoviesAsync,
+    searchMovie
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchLine);
