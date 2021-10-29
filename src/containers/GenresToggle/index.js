@@ -1,23 +1,26 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { changeActiveGenre } from '../../store/actions/filterActions';
+import { getMoviesAsync } from '../../store/actions/moviesActions';
+
+import { formParamsObj } from '../../utils/utils';
 import GenresItem from './GenresItem';
 import styles from './genrestoggle.modules.scss';
 
 const GENRES_LIST = ['All', 'Drama', 'Family', 'Comedy', 'Thriller'];
 
-const GenresToggle = ({changeHandler}) => {
-    const [activeGenre, setActiveGenre] = useState('All');
-
+const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesAsync, changeActiveGenre}) => {
     const chooseActiveGenre = genre => {
-        setActiveGenre(genre);
-        changeHandler(genre);
+        getMoviesAsync(formParamsObj(searchLine, genre, activeSorting));
+        changeActiveGenre(genre);
     };
 
     return (
         <ul className={styles['genre-list']}>
             {
-                GENRES_LIST.map((genre, index) => <GenresItem
+                GENRES_LIST.map((genre) => <GenresItem
                     value={genre}
                     key={genre}
                     active={activeGenre === genre}
@@ -28,7 +31,22 @@ const GenresToggle = ({changeHandler}) => {
 };
 
 GenresToggle.propTypes = {
-    changeHandler: PropTypes.func.isRequired
+    activeSorting: PropTypes.object.isRequired,
+    searchLine: PropTypes.string.isRequired,
+    activeGenre: PropTypes.string.isRequired,
+    getMoviesAsync: PropTypes.func.isRequired,
+    changeActiveGenre: PropTypes.func.isRequired,
 };
 
-export default GenresToggle;
+const mapStateToProps = ({filters}) => ({
+    activeSorting: filters.activeSorting,
+    searchLine: filters.searchLine,
+    activeGenre: filters.activeGenre
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    getMoviesAsync: params => dispatch(getMoviesAsync(params)),
+    changeActiveGenre: genre => dispatch(changeActiveGenre(genre))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GenresToggle);

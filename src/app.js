@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Header from './components/Header';
 import Main from './components/Main';
@@ -21,7 +22,9 @@ import ErrorBoundary from './containers/ErrorBoundary';
 import InfoModal from './modals/InfoModal';
 import MovieItemModal from './modals/MovieItemModal';
 
-import { moviesContext } from './context/moviesContext';
+import { openAddMovieModal, openCongratsMovieModal, closeAllModals } from './store/actions/modalActions';
+import { getMoviesAsync, addMovieAsync, deleteMovieAsync, updateMovieAsync } from './store/actions/moviesActions';
+import { clearAllFilters } from './store/actions/filterActions';
 
 import styles from './app.modules.scss';
 import checkmark from './assets/images/checkmark.png';
@@ -31,251 +34,48 @@ const ADD_MOVIE_CONGRATS_MODAL_HEADING = 'Congratulations!';
 const ADD_MOVIE_CONGRATS_MODAL_TEXT = 'The movie has been added to database successfully!';
 const DELETE_MOVIE_CONFIRMATION_MODAL_HEADING = 'Delete movie';
 const DELETE_MOVIE_CONFIRMATION_MODAL_TEXT = 'Are you sure you want to delete this movie?';
-const MOVIES_SERVER_URL = 'http://localhost:4000/movies';
 
-const App = () => {
-    const initialState = {
-        movies: [],
-        filteredMovies: [],
-        deleteMovieId: '',
-        editMovie: '',
-        activeMovie: {},
-        isAddMovieCongratsModalOpen: false,
-        isDeleteMovieConfirmModalOpen: false,
-        isAddMovieModalOpen: false,
-        isEditMovieModalOpen: false
+const App = (props) => {
+    let [activeMovie, setActiveMovie] = useState({});
+
+    const closeModal = () => {
+        const { closeAllModals } = props;
+
+        closeAllModals();
     };
 
-    let [state, setState] = useState(initialState);
+    const addMovieItemHandler = movie => {
+        const { addMovieAsync, openCongratsMovieModal, closeAllModals } = props;
 
-    useEffect(() => {
-        getAllMovies();
-    }, []);
-
-    const closeAddMovieCongratsModal = () => setState({
-        ...state,
-        isAddMovieCongratsModalOpen: false
-    });
-
-    const openDeleteMovieConfirmationModal = id => setState({
-        ...state,
-        isDeleteMovieConfirmModalOpen: true,
-        deleteMovieId: id
-    });
-
-    const closeDeleteMovieConfirmationModal = () => setState({
-        ...state,
-        isDeleteMovieConfirmModalOpen: false
-    });
-
-    const openAddMovieModal = () => setState({
-        ...state,
-        isAddMovieModalOpen: true
-    });
-
-    const closeAddMovieModal = () => setState({
-        ...state,
-        isAddMovieModalOpen: false
-    });
-
-    const openEditMovieModal = id => setState({
-        ...state,
-        isEditMovieModalOpen: true,
-        editMovie: state.movies.find(movie => movie.id === id)
-    });
-
-    const closeEditMovieModal = () => setState({
-        ...state,
-        isEditMovieModalOpen: false
-    });
-
-    const getAllMovies = () => {
-        fetch(`${MOVIES_SERVER_URL}?limit=30`)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-
-                throw new Error('Server response error');
-            })
-            .then(response => updateMoviesList(response, 'update'))
-            .catch(error => errorHandler(error));
+        addMovieAsync(movie);
+        closeAllModals();
+        openCongratsMovieModal();
     };
 
-    const addMovieItem = movie => {
-        fetch(MOVIES_SERVER_URL, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(movie)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
+    const editMovieItemHandler = movie => {
+        const { updateMovieAsync, closeAllModals } = props;
 
-                throw new Error('Movie has not been added');
-            })
-            .then(response => addMovieItemSuccessHandler(response))
-            .catch(error => errorHandler(error));
+        updateMovieAsync(movie);
+        closeAllModals();
     };
-
-    const editMovieItem = movie => {
-        fetch(MOVIES_SERVER_URL, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(movie)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-
-                throw new Error('Movie has not been edited');
-            })
-            .then(response => editMovieItemSuccessHandler(response))
-            .catch(error => errorHandler(error));
-    };
-
-    const deleteMovieItem = id => {
-        fetch(`${MOVIES_SERVER_URL}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    return deleteMovieItemSuccessHandler();
-                }
-
-                throw new Error('Movie has not been deleted');
-            })
-            .catch(error => errorHandler(error));
-    };
-
-    const errorHandler = error => console.error(`We did not manage to process it due to: ${error.message}`);
 
     const deleteMovieItemHandler = () => {
-        deleteMovieItem(state.deleteMovieId);
+        const { deleteMovieAsync, closeAllModals, deleteMovieId } = props;
+
+        deleteMovieAsync(deleteMovieId);
+        closeAllModals();
     };
 
-    const addMovieItemSuccessHandler = movie => {
-        updateMoviesList(movie, 'add');
+    const logoClickHandler = () => {
+        const { getMoviesAsync, clearAllFilters } = props;
+
+        getMoviesAsync();
+        clearAllFilters();
     };
 
-    const editMovieItemSuccessHandler = movie => {
-        updateMoviesList(movie, 'edit');
-    };
+    const showMovieDetails = id => setActiveMovie(props.filteredMovies.find(movie => movie.id === id));
 
-    const deleteMovieItemSuccessHandler = () => {
-        updateMoviesList(state.deleteMovieId, 'delete');
-    };
-
-    const updateMoviesList = (data, mode) => {
-        switch(mode) {
-            case 'add':
-                setState({
-                    ...state,
-                    isAddMovieModalOpen: false,
-                    isAddMovieCongratsModalOpen: true,
-                    movies: [...state.movies, data],
-                    filteredMovies: [...state.movies, data]
-                });
-
-                break;
-
-            case 'delete':
-                const filteredMovies = state.movies.filter(movie => movie.id !== data);
-
-                setState({
-                    ...state,
-                    isDeleteMovieConfirmModalOpen: false,
-                    movies: filteredMovies,
-                    filteredMovies,
-                    deleteMovieId: ''
-                });
-
-                break;
-
-            case 'edit':
-                const mappedMovies = state.movies.map(movie => {
-                    if (movie.id === data.id) {
-                        return data;
-                    }
-
-                    return movie;
-                });
-
-                setState({
-                    ...state,
-                    isEditMovieModalOpen: false,
-                    movies: mappedMovies,
-                    filteredMovies: mappedMovies
-                });
-
-                break;
-
-            case 'update':
-                setState({
-                    ...state,
-                    movies: data.data,
-                    filteredMovies: data.data
-                });
-
-                break;
-        }
-
-    };
-
-    const filterMoviesListByGenre = genre => {
-        if (genre !== 'All') {
-            const filteredMovies = _.filter(state.movies, movie => _.includes(movie.genres, genre));
-
-            setState({
-                ...state,
-                filteredMovies
-            });
-        } else {
-            setState({
-                ...state,
-                filteredMovies: state.movies
-            });
-        }
-    };
-
-    const filterMoviesListBySort = (sort, reverse) => {
-        let filteredMovies = [];
-        let order = reverse ? ['desc'] : ['asc'];
-
-        if (sort === 'Title') {
-            filteredMovies = _.orderBy(state.movies, ['title'], order);
-        } else if (sort === 'Release Date') {
-            filteredMovies = _.orderBy(state.movies, ['release_date'], order);
-        }
-
-        setState({
-            ...state,
-            filteredMovies
-        });
-    };
-
-    const searchMovies = value => setState({
-        ...state,
-        filteredMovies: state.movies.filter(({title}) => title.toLowerCase().includes(value.toLowerCase()))
-    });
-
-    const showMovieDetails = id => setState({
-        ...state,
-        activeMovie: state.movies.find(movie => movie.id === id)
-    });
-
-    const hideMovieDetails = () => setState({
-        ...state,
-        activeMovie: {}
-    });
+    const hideMovieDetails = () => setActiveMovie({});
 
     const renderMovieAddedCongrats = () => (
         <>
@@ -303,49 +103,44 @@ const App = () => {
         <div className={styles['container']}>
             <div className={styles['wrapper']}>
                 {
-                    state.activeMovie.id ? (
+                    activeMovie.id ? (
                         <Header>
                             <div className={styles['upper-line']}>
-                                <Logo />
+                                <Logo clickHandler={logoClickHandler} />
                                 <Button value='X' clickHandler={hideMovieDetails}/>
                             </div>
-                            <MovieDetails movie={state.activeMovie} />
+                            <MovieDetails movie={activeMovie} />
                         </Header>
                     ) : (
                         <Header>
                             <div className={styles['upper-line']}>
-                                <Logo />
-                                <Button value='+ Add Movie' clickHandler={openAddMovieModal}/>
+                                <Logo clickHandler={logoClickHandler} />
+                                <Button value='+ Add Movie' clickHandler={props.openAddMovieModal} />
                             </div>
                             <div className={styles['heading']}>
                                 <MainHeading text={HOME_PAGE_HEADING}/>
                             </div>
-                            <SearchLine submitHandler={searchMovies}/>
+                            <SearchLine />
                         </Header>
                     )
                 }
-                <moviesContext.Provider value={state.filteredMovies}>
-                    <Main>
-                        <ErrorBoundary>
-                            <section className={styles['filter-line']}>
-                                <GenresToggle changeHandler={filterMoviesListByGenre}/>
-                                <SortingToggle submitHandler={filterMoviesListBySort}/>
-                            </section>
-                            <MoviesCounter />
-                            <MoviesList
-                                deleteHandler={openDeleteMovieConfirmationModal}
-                                editHandler={openEditMovieModal}
-                                clickHandler={showMovieDetails} />
-                        </ErrorBoundary>
-                    </Main>
-                </moviesContext.Provider>
+                <Main>
+                    <ErrorBoundary>
+                        <section className={styles['filter-line']}>
+                            <GenresToggle />
+                            <SortingToggle />
+                        </section>
+                        <MoviesCounter length={props.filteredMovies.length}/>
+                        <MoviesList clickHandler={showMovieDetails} />
+                    </ErrorBoundary>
+                </Main>
                 <Footer>
                     <Logo />
                 </Footer>
-                {state.isAddMovieCongratsModalOpen && <InfoModal render={renderMovieAddedCongrats} closeHandler={closeAddMovieCongratsModal} />}
-                {state.isDeleteMovieConfirmModalOpen && <InfoModal render={renderMovieDeleteConfirmation} closeHandler={closeDeleteMovieConfirmationModal} />}
-                {state.isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={closeAddMovieModal} submitHandler={addMovieItem} />}
-                {state.isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={closeEditMovieModal} submitHandler={editMovieItem} movie={state.editMovie} />}
+                {props.isAddMovieCongratsModalOpen && <InfoModal render={renderMovieAddedCongrats} closeHandler={closeModal} />}
+                {props.isDeleteMovieConfirmModalOpen && <InfoModal render={renderMovieDeleteConfirmation} closeHandler={closeModal} />}
+                {props.isAddMovieModalOpen && <MovieItemModal mode='add' closeHandler={closeModal} submitHandler={addMovieItemHandler} />}
+                {props.isEditMovieModalOpen && <MovieItemModal mode='edit' closeHandler={closeModal} submitHandler={editMovieItemHandler} movie={props.editMovie} />}
             </div>
             <aside className={styles['sidebar']}>
                 <Sidebar>
@@ -357,4 +152,43 @@ const App = () => {
     );
 }
 
-export default App;
+App.propTypes = {
+    filteredMovies: PropTypes.array.isRequired,
+    editMovie: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    deleteMovieId: PropTypes.string.isRequired,
+    isAddMovieCongratsModalOpen: PropTypes.bool.isRequired,
+    isDeleteMovieConfirmModalOpen: PropTypes.bool.isRequired,
+    isAddMovieModalOpen: PropTypes.bool.isRequired,
+    isEditMovieModalOpen: PropTypes.bool.isRequired,
+    openAddMovieModal: PropTypes.func.isRequired,
+    openCongratsMovieModal: PropTypes.func.isRequired,
+    closeAllModals: PropTypes.func.isRequired,
+    addMovieAsync: PropTypes.func.isRequired,
+    updateMovieAsync: PropTypes.func.isRequired,
+    deleteMovieAsync: PropTypes.func.isRequired,
+    getMoviesAsync: PropTypes.func.isRequired,
+    clearAllFilters: PropTypes.func.isRequired
+};
+
+const mapStateToProps = ({movies, modals}) => ({
+    filteredMovies: movies.filteredMovies,
+    editMovie: movies.editMovie,
+    deleteMovieId: movies.deleteMovieId,
+    isAddMovieCongratsModalOpen: modals.isAddMovieCongratsModalOpen,
+    isDeleteMovieConfirmModalOpen: modals.isDeleteMovieConfirmModalOpen,
+    isAddMovieModalOpen: modals.isAddMovieModalOpen,
+    isEditMovieModalOpen: modals.isEditMovieModalOpen
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    openAddMovieModal: () => dispatch(openAddMovieModal()),
+    openCongratsMovieModal: () => dispatch(openCongratsMovieModal()),
+    closeAllModals: () => dispatch(closeAllModals()),
+    addMovieAsync: (movie) => dispatch(addMovieAsync(movie)),
+    updateMovieAsync: (movie) => dispatch(updateMovieAsync(movie)),
+    deleteMovieAsync: (id) => dispatch(deleteMovieAsync(id)),
+    getMoviesAsync: () => dispatch(getMoviesAsync()),
+    clearAllFilters: () => dispatch(clearAllFilters())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

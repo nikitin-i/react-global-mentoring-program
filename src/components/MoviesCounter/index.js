@@ -1,15 +1,12 @@
-import React, { useContext } from 'react';
-
-import { moviesContext } from '../../context/moviesContext';
+import React from 'react';
 
 import styles from './moviescounter.modules.scss';
 
-const MoviesCounter = () => {
-    const movies = useContext(moviesContext);
-    const ending = `${movies.length > 1 ? 'movies' : 'movie'} found`;
+const MoviesCounter = ({length}) => {
+    const ending = `${length > 1 ? 'movies' : 'movie'} found`;
 
     return (<p className={styles['movies-counter']}>
-        <span className={styles['movies-counter__amount']}>{movies.length}</span>
+        <span className={styles['movies-counter__amount']}>{length}</span>
         {ending}
     </p>);
 };
