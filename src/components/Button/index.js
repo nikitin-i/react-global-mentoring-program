@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 
 import styles from './button.modules.scss';
 
-const Button = ({value, type='button', clickHandler}) => (
+const Button = ({value, type, clickHandler}) => (
     <button type={type} className='button' onClick={clickHandler}>
         {value}
     </button>
 );
+
+Button.defaultProps = {
+    type: 'button'
+};
 
 Button.propTypes = {
     value: PropTypes.string.isRequired,
