@@ -155,7 +155,7 @@ const App = (props) => {
 App.propTypes = {
     filteredMovies: PropTypes.array.isRequired,
     editMovie: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    deleteMovieId: PropTypes.string.isRequired,
+    deleteMovieId: PropTypes.number.isRequired,
     isAddMovieCongratsModalOpen: PropTypes.bool.isRequired,
     isDeleteMovieConfirmModalOpen: PropTypes.bool.isRequired,
     isAddMovieModalOpen: PropTypes.bool.isRequired,
@@ -180,15 +180,15 @@ const mapStateToProps = ({movies, modals}) => ({
     isEditMovieModalOpen: modals.isEditMovieModalOpen
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    openAddMovieModal: () => dispatch(openAddMovieModal()),
-    openCongratsMovieModal: () => dispatch(openCongratsMovieModal()),
-    closeAllModals: () => dispatch(closeAllModals()),
-    addMovieAsync: (movie) => dispatch(addMovieAsync(movie)),
-    updateMovieAsync: (movie) => dispatch(updateMovieAsync(movie)),
-    deleteMovieAsync: (id) => dispatch(deleteMovieAsync(id)),
-    getMoviesAsync: () => dispatch(getMoviesAsync()),
-    clearAllFilters: () => dispatch(clearAllFilters())
-});
+const mapDispatchToProps = {
+    openAddMovieModal,
+    openCongratsMovieModal,
+    closeAllModals,
+    addMovieAsync,
+    updateMovieAsync,
+    deleteMovieAsync,
+    getMoviesAsync,
+    clearAllFilters
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

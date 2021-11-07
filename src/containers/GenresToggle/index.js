@@ -44,9 +44,9 @@ const mapStateToProps = ({filters}) => ({
     activeGenre: filters.activeGenre
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    getMoviesAsync: params => dispatch(getMoviesAsync(params)),
-    changeActiveGenre: genre => dispatch(changeActiveGenre(genre))
-});
+const mapDispatchToProps = {
+    getMoviesAsync,
+    changeActiveGenre
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenresToggle);

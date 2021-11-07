@@ -61,12 +61,12 @@ const mapStateToProps = ({movies}) => ({
     filteredMovies: movies.filteredMovies
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    getMoviesAsync: (params) => dispatch(getMoviesAsync(params)),
-    setDeleteMovie: (id) => dispatch(setDeleteMovie(id)),
-    setEditMovie: (movie) => dispatch(setEditMovie(movie)),
-    openDeleteMovieModal: (state) => dispatch(openDeleteMovieModal(state)),
-    openEditMovieModal: (state) => dispatch(openEditMovieModal(state))
-});
+const mapDispatchToProps = {
+    getMoviesAsync,
+    setDeleteMovie,
+    setEditMovie,
+    openDeleteMovieModal,
+    openEditMovieModal
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesList);
