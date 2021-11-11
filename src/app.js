@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Routes, Route, useNavigate, useLocation  } from 'react-router-dom';
 
 import Header from './components/Header';
 import Main from './components/Main';
@@ -18,6 +19,7 @@ import GenresToggle from './containers/GenresToggle';
 import SortingToggle from './containers/SortingToggle';
 import MoviesCounter from './components/MoviesCounter';
 import ErrorBoundary from './containers/ErrorBoundary';
+import NotFound from './components/NotFound';
 
 import InfoModal from './modals/InfoModal';
 import MovieItemModal from './modals/MovieItemModal';
@@ -36,7 +38,16 @@ const DELETE_MOVIE_CONFIRMATION_MODAL_HEADING = 'Delete movie';
 const DELETE_MOVIE_CONFIRMATION_MODAL_TEXT = 'Are you sure you want to delete this movie?';
 
 const App = (props) => {
-    let [activeMovie, setActiveMovie] = useState({});
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname === '/') {
+            navigateTo('./search');
+        }
+    }, []);
+
+    const navigateTo = (path) => navigate(path, { replace: true });
 
     const closeModal = () => {
         const { closeAllModals } = props;
@@ -64,6 +75,7 @@ const App = (props) => {
 
         deleteMovieAsync(deleteMovieId);
         closeAllModals();
+        navigateTo('./search');
     };
 
     const logoClickHandler = () => {
@@ -73,9 +85,9 @@ const App = (props) => {
         clearAllFilters();
     };
 
-    const showMovieDetails = id => setActiveMovie(props.filteredMovies.find(movie => movie.id === id));
+    const showMovieDetails = id => props.filteredMovies.find(movie => movie.id === id);
 
-    const hideMovieDetails = () => setActiveMovie({});
+    const hideMovieDetails = () => navigate('./search', { replace: true });
 
     const renderMovieAddedCongrats = () => (
         <>
@@ -99,41 +111,71 @@ const App = (props) => {
         </>
     );
 
+    const searchPanel = <Header>
+        <div className={styles['upper-line']}>
+            <Logo clickHandler={logoClickHandler} />
+            <Button value='+ Add Movie' clickHandler={props.openAddMovieModal} />
+        </div>
+        <div className={styles['heading']}>
+            <MainHeading text={HOME_PAGE_HEADING}/>
+        </div>
+        <SearchLine />
+    </Header>;
+
+    const moviePanel = <Header>
+        <div className={styles['upper-line']}>
+            <Logo clickHandler={logoClickHandler} />
+            <Button value='X' clickHandler={hideMovieDetails}/>
+        </div>
+        <MovieDetails showMovieDetails={showMovieDetails} />
+    </Header>;
+
+    const mainPanel = <Main>
+        <ErrorBoundary>
+            <section className={styles['filter-line']}>
+                <GenresToggle />
+                <SortingToggle />
+            </section>
+            <MoviesCounter length={props.filteredMovies.length}/>
+            <MoviesList />
+        </ErrorBoundary>
+    </Main>;
+
     return (
         <div className={styles['container']}>
             <div className={styles['wrapper']}>
-                {
-                    activeMovie.id ? (
-                        <Header>
-                            <div className={styles['upper-line']}>
-                                <Logo clickHandler={logoClickHandler} />
-                                <Button value='X' clickHandler={hideMovieDetails}/>
-                            </div>
-                            <MovieDetails movie={activeMovie} />
-                        </Header>
-                    ) : (
-                        <Header>
-                            <div className={styles['upper-line']}>
-                                <Logo clickHandler={logoClickHandler} />
-                                <Button value='+ Add Movie' clickHandler={props.openAddMovieModal} />
-                            </div>
-                            <div className={styles['heading']}>
-                                <MainHeading text={HOME_PAGE_HEADING}/>
-                            </div>
-                            <SearchLine />
-                        </Header>
-                    )
-                }
-                <Main>
-                    <ErrorBoundary>
-                        <section className={styles['filter-line']}>
-                            <GenresToggle />
-                            <SortingToggle />
-                        </section>
-                        <MoviesCounter length={props.filteredMovies.length}/>
-                        <MoviesList clickHandler={showMovieDetails} />
-                    </ErrorBoundary>
-                </Main>
+                <Routes>
+                    <Route path="/" element={
+                        <>
+                            { searchPanel }
+                            { mainPanel }
+                        </>
+                    } />
+                    <Route path="search" element={
+                        <>
+                            { searchPanel }
+                            { mainPanel }
+                        </>
+                    } />
+                    <Route path="search/:searchQuery" element={
+                        <>
+                            { searchPanel }
+                            { mainPanel }
+                        </>
+                    } />
+                    <Route path="movie/:movieId" element={
+                        <>
+                            { moviePanel }
+                            { mainPanel }
+                        </>
+                    } />
+                    <Route path="*" element={
+                        <>
+                            { searchPanel }
+                            <NotFound />
+                        </>
+                    } />
+                </Routes>
                 <Footer>
                     <Logo />
                 </Footer>
@@ -155,7 +197,7 @@ const App = (props) => {
 App.propTypes = {
     filteredMovies: PropTypes.array.isRequired,
     editMovie: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    deleteMovieId: PropTypes.number.isRequired,
+    deleteMovieId:  PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     isAddMovieCongratsModalOpen: PropTypes.bool.isRequired,
     isDeleteMovieConfirmModalOpen: PropTypes.bool.isRequired,
     isAddMovieModalOpen: PropTypes.bool.isRequired,
