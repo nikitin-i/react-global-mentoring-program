@@ -11,7 +11,7 @@ const MovieDetails = ({showMovieDetails}) => {
     const movie = showMovieDetails(Number(movieId));
 
     if (!movie) {
-        navigate('/search', {replace: true});
+        navigate('/search');
 
         return false;
     }

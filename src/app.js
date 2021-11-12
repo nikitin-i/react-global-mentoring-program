@@ -47,7 +47,7 @@ const App = (props) => {
         }
     }, []);
 
-    const navigateTo = (path) => navigate(path, { replace: true });
+    const navigateTo = (path) => navigate(path);
 
     const closeModal = () => {
         const { closeAllModals } = props;
@@ -75,7 +75,8 @@ const App = (props) => {
 
         deleteMovieAsync(deleteMovieId);
         closeAllModals();
-        navigateTo('./search');
+
+        navigateTo(`./search${props.searchLine ? ('/' + props.searchLine) : ''}${location.search ? location.search : ''}`);
     };
 
     const logoClickHandler = () => {
@@ -87,7 +88,7 @@ const App = (props) => {
 
     const showMovieDetails = id => props.filteredMovies.find(movie => movie.id === id);
 
-    const hideMovieDetails = () => navigate('./search', { replace: true });
+    const hideMovieDetails = () => navigateTo(`./search${props.searchLine ? ('/' + props.searchLine) : ''}${location.search ? location.search : ''}`);
 
     const renderMovieAddedCongrats = () => (
         <>
@@ -212,14 +213,15 @@ App.propTypes = {
     clearAllFilters: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({movies, modals}) => ({
+const mapStateToProps = ({movies, modals, filters}) => ({
     filteredMovies: movies.filteredMovies,
     editMovie: movies.editMovie,
     deleteMovieId: movies.deleteMovieId,
     isAddMovieCongratsModalOpen: modals.isAddMovieCongratsModalOpen,
     isDeleteMovieConfirmModalOpen: modals.isDeleteMovieConfirmModalOpen,
     isAddMovieModalOpen: modals.isAddMovieModalOpen,
-    isEditMovieModalOpen: modals.isEditMovieModalOpen
+    isEditMovieModalOpen: modals.isEditMovieModalOpen,
+    searchLine: filters.searchLine
 });
 
 const mapDispatchToProps = {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import styles from './searchline.modules.scss';
@@ -20,6 +20,7 @@ const SearchLine = ({searchLine, activeGenre, activeSorting, getMoviesAsync, sea
     const { searchQuery } = useParams();
     const [search, setSearch] = useState(searchLine);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         setSearch(searchLine);
@@ -36,15 +37,17 @@ const SearchLine = ({searchLine, activeGenre, activeSorting, getMoviesAsync, sea
                 null;
 
             getMoviesAsync(formParamsObj(searchQuery, genre, sortBy));
-            searchMovie(searchQuery)
+            searchMovie(searchQuery);
         }
     }, [])
 
     const submitSearchRequest = () => {
         getMoviesAsync(formParamsObj(search, activeGenre, activeSorting));
         searchMovie(search);
-        navigate(`/search/${search}`, {replace: true})
+
+        navigate(`/search/${search}${location.search ? location.search : ''}`);
     };
+
     const changeSearchLine = ({target: {value}}) => setSearch(value);
     const keyDownHandler = ({keyCode}) => keyCode === ENTER_BUTTON_KEY_CODE && submitSearchRequest();
 
