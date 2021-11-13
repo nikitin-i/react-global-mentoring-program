@@ -1,10 +1,23 @@
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import SectionHeading from '../../../components/SectionHeading';
 import styles from './moviedetails.modules.scss';
 
-const MovieDetails = ({movie: {poster_path, title, genres, release_date, vote_average, runtime, overview}}) => {
+const MovieDetails = ({showMovieDetails}) => {
+    const navigate = useNavigate();
+    const { movieId } = useParams();
+    const movie = showMovieDetails(Number(movieId));
+
+    if (!movie) {
+        navigate('/search');
+
+        return false;
+    }
+
+    const { poster_path, title, genres, release_date, vote_average, runtime, overview } = movie;
+
     const genresList = genres.join(' & ');
     const year = release_date.slice(0, 4);
     const hours = Math.floor(runtime / 60);
@@ -31,7 +44,7 @@ const MovieDetails = ({movie: {poster_path, title, genres, release_date, vote_av
 };
 
 MovieDetails.propTypes = {
-    movie: PropTypes.object.isRequired
+    showMovieDetails: PropTypes.func.isRequired
 };
 
 export default MovieDetails;

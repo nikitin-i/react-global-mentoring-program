@@ -1,0 +1,28 @@
+.not-found {
+    flex: 0 0 calc(100% - 288px - 64px);
+    background-color: #232323;
+    padding: 0 44px;
+
+    &__wrapper {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__heading {
+        margin: 0 0 20px;
+        font-size: 32px;
+        line-height: 36px;
+        color: #F65261;
+    }
+
+    &__description {
+        margin: 0;
+        font-size: 18px;
+        line-height: 22px;
+        color: #E4E4E4;
+    }
+}

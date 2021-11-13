@@ -1,24 +1,40 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { openDeleteMovieModal, openEditMovieModal } from '../../store/actions/modalActions';
 import { getMoviesAsync, setDeleteMovie, setEditMovie } from '../../store/actions/moviesActions';
+import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
+import { formParamsObj } from '../../utils/utils';
 
 import MovieItem from './MoviesItem';
 import styles from './movieslist.modules.scss';
 
 const MoviesList = ({
                         filteredMovies,
-                        clickHandler,
                         getMoviesAsync,
                         setDeleteMovie,
                         setEditMovie,
                         openDeleteMovieModal,
                         openEditMovieModal
 }) => {
+    const [searchParams] = useCustomSearchParams();
+    const { searchQuery } = useParams();
+
     useEffect(() => {
-        getMoviesAsync();
+        if (!searchParams.has('genre') && !searchParams.has('sortBy') && !searchQuery) {
+            getMoviesAsync();
+        } else if (searchParams.has('genre') && searchParams.has('sortBy') && !searchQuery) {
+            const sortingObj = {
+                str: searchParams.get('sortBy').replace('+', ' '),
+                reverse: false
+            };
+
+            const genre = searchParams.get('genre');
+
+            getMoviesAsync(formParamsObj(null, genre, sortingObj));
+        }
     }, []);
 
     const openDeleteConfirmationModal = (id) => {
@@ -39,8 +55,7 @@ const MoviesList = ({
                         data={movie}
                         key={movie.id}
                         deleteHandler={openDeleteConfirmationModal}
-                        editHandler={openEditingMovieModal}
-                        clickHandler={clickHandler} />)
+                        editHandler={openEditingMovieModal} />)
                 }
             </div>
         </div>
@@ -48,7 +63,6 @@ const MoviesList = ({
 };
 
 MoviesList.propTypes = {
-    clickHandler: PropTypes.func.isRequired,
     filteredMovies: PropTypes.array,
     getMoviesAsync: PropTypes.func.isRequired,
     setDeleteMovie: PropTypes.func.isRequired,

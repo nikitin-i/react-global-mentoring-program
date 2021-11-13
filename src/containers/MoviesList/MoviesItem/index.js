@@ -1,12 +1,16 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import MovieMenu from '../MovieMenu';
 import styles from './moviesitem.modules.scss';
 
-const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler, clickHandler}) => {
+const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const movieItemClickHandler = () => {
-        clickHandler(id);
+        navigate(`/movie/${id}${location.search ? location.search : ''}`);
     };
 
     release_date = release_date.slice(0, 4);
@@ -35,8 +39,7 @@ MovieItem.propTypes = {
         tagline: PropTypes.string
     }),
     deleteHandler: PropTypes.func.isRequired,
-    editHandler: PropTypes.func.isRequired,
-    clickHandler: PropTypes.func.isRequired
+    editHandler: PropTypes.func.isRequired
 };
 
 MovieItem.defaultProps = {

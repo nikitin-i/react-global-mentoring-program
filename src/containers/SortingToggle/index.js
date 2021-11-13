@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { changeActiveSorting } from '../../store/actions/filterActions';
 import { getMoviesAsync } from '../../store/actions/moviesActions';
+import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 
 import { formParamsObj } from '../../utils/utils';
 import style from './sortingtoggle.modules.scss';
@@ -12,6 +14,24 @@ const SORT_ROW = 'Sort By:';
 const SORT_ITEMS = ['Title', 'Release Date'];
 
 const SortingToggle = ({activeSorting, activeGenre, searchLine, getMoviesAsync, changeActiveSorting}) => {
+    const [searchParams, updateSearchParams] = useCustomSearchParams();
+    const { searchQuery } = useParams();
+
+    useEffect(() => {
+        if (searchParams.has('sortBy')) {
+            const sortingObj = {
+                str: searchParams.get('sortBy').replace('+', ' '),
+                reverse: false
+            };
+
+            changeActiveSorting(sortingObj);
+
+            if (!searchParams.has('genre') && !searchQuery) {
+                getMoviesAsync(formParamsObj(null, null, sortingObj));
+            }
+        }
+    }, []);
+
     const changeActiveToggle = ({target: {id}}) => {
         const sortingObj = {
             str: id
@@ -25,6 +45,7 @@ const SortingToggle = ({activeSorting, activeGenre, searchLine, getMoviesAsync, 
 
         getMoviesAsync(formParamsObj(searchLine, activeGenre, sortingObj));
         changeActiveSorting(sortingObj);
+        updateSearchParams({sortBy: id});
     };
 
     return (

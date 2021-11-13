@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { changeActiveGenre } from '../../store/actions/filterActions';
 import { getMoviesAsync } from '../../store/actions/moviesActions';
+import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 
 import { formParamsObj } from '../../utils/utils';
 import GenresItem from './GenresItem';
@@ -12,9 +14,25 @@ import styles from './genrestoggle.modules.scss';
 const GENRES_LIST = ['All', 'Drama', 'Family', 'Comedy', 'Thriller'];
 
 const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesAsync, changeActiveGenre}) => {
+    const [searchParams, updateSearchParams] = useCustomSearchParams();
+    const { searchQuery } = useParams();
+
+    useEffect(() => {
+        if (searchParams.has('genre')) {
+            const genre = searchParams.get('genre');
+
+            changeActiveGenre(genre);
+
+            if (!searchParams.has('sortBy') && !searchQuery) {
+                getMoviesAsync(formParamsObj(null, genre, null));
+            }
+        }
+    }, []);
+
     const chooseActiveGenre = genre => {
         getMoviesAsync(formParamsObj(searchLine, genre, activeSorting));
         changeActiveGenre(genre);
+        updateSearchParams({genre});
     };
 
     return (
