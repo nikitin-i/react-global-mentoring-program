@@ -25,7 +25,7 @@ const MovieDetails = ({showMovieDetails}) => {
     const duration = `${hours}h ${minutes}min`;
 
     return (
-        <section className={styles['movie-details']}>
+        <section className={styles['movie-details']} id='movie-details'>
             <img className={styles['movie-details__poster']} alt='poster image' src={poster_path} />
             <div className={styles['movie-details__info']}>
                 <div className={styles['movie-details__heading']}>

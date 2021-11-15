@@ -8,6 +8,7 @@ import {
     SET_DELETE_MOVIE,
     SET_EDIT_MOVIE
 } from '../types';
+import {setEditMovie} from "../actions/moviesActions";
 
 const initialState = {
     movies: [],

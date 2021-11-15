@@ -16,7 +16,7 @@ const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, delet
     release_date = release_date.slice(0, 4);
 
     return (
-        <section className={styles['movie-item']} onClick={movieItemClickHandler}>
+        <section id='movie' className={styles['movie-item']} onClick={movieItemClickHandler}>
             <img className={styles['movie-item__poster']} src={poster_path} alt='poster image'/>
             <div className={styles['movie-item__info']}>
                 <h3 className={styles['movie-item__title']}>{title}</h3>
