@@ -39,4 +39,16 @@ describe('SearchLine', () => {
 
         expect(searchMovie).toHaveBeenCalledTimes(1);
     });
+
+    it('should call handler after keydown event (Enter button only)', () => {
+        fireEvent.change(screen.getByPlaceholderText(/what do you want to watch\?/i), {target: {value: 'search text'}});
+        fireEvent.keyDown(screen.getByPlaceholderText(/what do you want to watch\?/i), {
+            key: "Enter",
+            code: "Enter",
+            keyCode: 13,
+            charCode: 13
+        });
+
+        expect(searchMovie).toHaveBeenCalledTimes(1);
+    });
 });

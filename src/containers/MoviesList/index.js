@@ -11,7 +11,7 @@ import { formParamsObj } from '../../utils/utils';
 import MovieItem from './MoviesItem';
 import styles from './movieslist.modules.scss';
 
-const MoviesList = ({
+export const MoviesList = ({
                         filteredMovies,
                         getMoviesAsync,
                         setDeleteMovie,

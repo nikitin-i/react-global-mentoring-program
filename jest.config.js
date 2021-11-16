@@ -8,7 +8,7 @@ module.exports = {
     },
     "moduleNameMapper": {
         "\\.(css|scss)$": "identity-obj-proxy",
-        "\\.(png)$": "<rootDir>/__mocks__/fileMock.js"
+        "\\.(jpg|jpeg|png)$": "identity-obj-proxy"
     },
     "coverageReporters": ["json", "html"],
     "collectCoverageFrom": [

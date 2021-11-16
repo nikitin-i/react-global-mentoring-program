@@ -1,5 +1,5 @@
 import axios from 'axios';
-import 'regenerator-runtime/runtime'
+import 'regenerator-runtime/runtime';
 
 import { getMoviesAsync, getMovies, addMovieAsync, addMovie, updateMovieAsync, updateMovie, deleteMovieAsync, deleteMovie } from '../moviesActions';
 

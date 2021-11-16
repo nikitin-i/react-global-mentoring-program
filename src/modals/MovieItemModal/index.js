@@ -85,22 +85,22 @@ const MovieItemModal = ({ movie={}, mode, closeHandler, submitHandler }) => {
                             <label className={styles['movie-item-modal__label-wide']}>
                                 <p className={styles['movie-item-modal__label-title']}>Title</p>
                                 <input id='title' value={formik.values.title} className={styles['movie-item-modal__input']} onChange={formik.handleChange} />
-                                {formik.touched.title && formik.errors.title ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.title}</span> : null}
+                                {formik.touched.title && formik.errors.title ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.title}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label-short']}>
                                 <p className={styles['movie-item-modal__label-title']}>Release date</p>
                                 <input id='release_date' value={formik.values.release_date} type='date' className={styles['movie-item-modal__input']} onChange={formik.handleChange} />
-                                {formik.touched.release_date && formik.errors.release_date ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.release_date}</span> : null}
+                                {formik.touched.release_date && formik.errors.release_date ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.release_date}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label-wide']}>
                                 <p className={styles['movie-item-modal__label-title']}>Movie url</p>
                                 <input id='poster_path' value={formik.values.poster_path} className={styles['movie-item-modal__input']} placeholder='https://' onChange={formik.handleChange} />
-                                {formik.touched.poster_path && formik.errors.poster_path ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.poster_path}</span> : null}
+                                {formik.touched.poster_path && formik.errors.poster_path ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.poster_path}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label-short']}>
                                 <p className={styles['movie-item-modal__label-title']}>Rating</p>
                                 <input id='vote_average' value={formik.values.vote_average} className={styles['movie-item-modal__input']} onChange={formik.handleChange} />
-                                {formik.touched.vote_average && formik.errors.vote_average ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.vote_average}</span> : null}
+                                {formik.touched.vote_average && formik.errors.vote_average ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.vote_average}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label-wide']}>
                                 <p className={styles['movie-item-modal__label-title']}>Genre</p>
@@ -111,17 +111,17 @@ const MovieItemModal = ({ movie={}, mode, closeHandler, submitHandler }) => {
                                     <option value='Family'>Family</option>
                                     <option value='Thriller'>Thriller</option>
                                 </select>
-                                {formik.touched.genres && formik.errors.genres ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.genres}</span> : null}
+                                {formik.touched.genres && formik.errors.genres ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.genres}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label-short']}>
                                 <p className={styles['movie-item-modal__label-title']}>Runtime</p>
                                 <input id='runtime' value={formik.values.runtime} className={styles['movie-item-modal__input']} placeholder='minutes' onChange={formik.handleChange}/>
-                                {formik.touched.runtime && formik.errors.runtime ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.runtime}</span> : null}
+                                {formik.touched.runtime && formik.errors.runtime ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.runtime}</span> : null}
                             </label>
                             <label className={styles['movie-item-modal__label']}>
                                 <p className={styles['movie-item-modal__label-title']}>Overview</p>
                                 <textarea id='overview' value={formik.values.overview} className={styles['movie-item-modal__textarea']} placeholder='Movie description' onChange={formik.handleChange}/>
-                                {formik.touched.overview && formik.errors.overview ? <span className={styles['movie-item-modal__error-message']}>{formik.errors.overview}</span> : null}
+                                {formik.touched.overview && formik.errors.overview ? <span role='error-message' className={styles['movie-item-modal__error-message']}>{formik.errors.overview}</span> : null}
                             </label>
                             <div className={styles['movie-item-modal__buttons']}>
                                 <Button clickHandler={formik.handleReset} value='Reset'/>
