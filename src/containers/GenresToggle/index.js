@@ -13,7 +13,7 @@ import styles from './genrestoggle.modules.scss';
 
 const GENRES_LIST = ['All', 'Drama', 'Family', 'Comedy', 'Thriller'];
 
-const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesAsync, changeActiveGenre}) => {
+export const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesAsync, changeActiveGenre}) => {
     const [searchParams, updateSearchParams] = useCustomSearchParams();
     const { searchQuery } = useParams();
 

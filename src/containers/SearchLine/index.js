@@ -15,7 +15,7 @@ import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 
 const ENTER_BUTTON_KEY_CODE = 13;
 
-const SearchLine = ({searchLine, activeGenre, activeSorting, getMoviesAsync, searchMovie}) => {
+export const SearchLine = ({searchLine, activeGenre, activeSorting, getMoviesAsync, searchMovie}) => {
     const [searchParams] = useCustomSearchParams();
     const { searchQuery } = useParams();
     const [search, setSearch] = useState(searchLine);

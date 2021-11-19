@@ -17,8 +17,7 @@ export const getMoviesAsync = (params={}) => (dispatch) => {
                 ...params
             }
         })
-        .then(({data: {data:movies}}) => dispatch(getMovies(movies)))
-        .catch(err => console.error(err));
+        .then(({data: {data:movies}}) => dispatch(getMovies(movies)), err => console.error(err));
 };
 
 export const addMovieAsync = (movie) => (dispatch) => {
@@ -29,8 +28,7 @@ export const addMovieAsync = (movie) => (dispatch) => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(({data:movie}) => dispatch(addMovie(movie)))
-        .catch(err => console.error(err));
+        .then(({data:movie}) => dispatch(addMovie(movie)), err => console.error(err));
 };
 
 export const updateMovieAsync = (movie) => (dispatch) => {
@@ -41,15 +39,13 @@ export const updateMovieAsync = (movie) => (dispatch) => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(({data:movie}) => dispatch(updateMovie(movie)))
-        .catch(err => console.error(err));
+        .then(({data:movie}) => dispatch(updateMovie(movie)), err => console.error(err));
 };
 
 export const deleteMovieAsync = (id) => (dispatch) => {
     axios
         .delete(`http://localhost:4000/movies/${id}`)
-        .then(() => dispatch(deleteMovie(id)))
-        .catch(err => console.error(err));
+        .then(() => dispatch(deleteMovie(id)), err => console.error(err));
 };
 
 export const getMovies = (movies) => ({

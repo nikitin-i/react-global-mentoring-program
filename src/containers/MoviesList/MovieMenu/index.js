@@ -30,7 +30,7 @@ const MovieMenu = ({id, deleteHandler, editHandler}) => {
     const classList = submenu ? `${styles['movie-menu__list']} ${styles['movie-menu__list--active']}` : styles['movie-menu__list'];
 
     return(
-        <div className={styles['movie-menu']} onClick={openSubmenu}>
+        <div id='movie-menu' className={styles['movie-menu']} onClick={openSubmenu}>
             <div className={styles['movie-menu__dots']}>
                 <span className={styles['movie-menu__dot1']} />
                 <span className={styles['movie-menu__dot2']} />

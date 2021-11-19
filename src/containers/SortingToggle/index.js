@@ -13,7 +13,7 @@ import style from './sortingtoggle.modules.scss';
 const SORT_ROW = 'Sort By:';
 const SORT_ITEMS = ['Title', 'Release Date'];
 
-const SortingToggle = ({activeSorting, activeGenre, searchLine, getMoviesAsync, changeActiveSorting}) => {
+export const SortingToggle = ({activeSorting, activeGenre, searchLine, getMoviesAsync, changeActiveSorting}) => {
     const [searchParams, updateSearchParams] = useCustomSearchParams();
     const { searchQuery } = useParams();
 

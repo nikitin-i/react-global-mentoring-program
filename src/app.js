@@ -37,7 +37,7 @@ const ADD_MOVIE_CONGRATS_MODAL_TEXT = 'The movie has been added to database succ
 const DELETE_MOVIE_CONFIRMATION_MODAL_HEADING = 'Delete movie';
 const DELETE_MOVIE_CONFIRMATION_MODAL_TEXT = 'Are you sure you want to delete this movie?';
 
-const App = (props) => {
+export const App = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
