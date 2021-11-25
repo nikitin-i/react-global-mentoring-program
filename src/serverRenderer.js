@@ -49,7 +49,11 @@ function serverRenderer() {
         switch(true) {
             case req.path === '/':
             case req.path === '/search':
-                await store.dispatch(getMoviesAsync({...req.query}));
+                const params1 = Object.keys(req.query).length ?
+                    formParamsObj(null, req.query.genre, {str: req.query.sortBy}) :
+                    {};
+
+                await store.dispatch(getMoviesAsync(params1));
 
                 break;
 
@@ -57,9 +61,9 @@ function serverRenderer() {
                 const search = req.path.split('/')[2];
                 const { genre, sortBy } = req.query;
 
-                const params = formParamsObj(search, genre, {str: sortBy});
+                const params2 = formParamsObj(search, genre, {str: sortBy});
 
-                await store.dispatch(getMoviesAsync(params));
+                await store.dispatch(getMoviesAsync(params2));
 
                 break;
 
