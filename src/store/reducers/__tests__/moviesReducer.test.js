@@ -5,7 +5,8 @@ const initialState = {
     movies: [],
     filteredMovies: [],
     deleteMovieId: '',
-    editMovie: ''
+    editMovie: '',
+    movieDetails: {}
 };
 
 describe('Movies Reducer', () => {
@@ -24,7 +25,8 @@ describe('Movies Reducer', () => {
             movies: [{id: 1}, {id: 2}],
             filteredMovies: [{id: 1}, {id: 2}],
             deleteMovieId: '',
-            editMovie: ''
+            editMovie: '',
+            movieDetails: {}
         };
         const movie = {id: 3};
 
@@ -37,7 +39,8 @@ describe('Movies Reducer', () => {
             movies: [{id: 1, title: 'title'}, {id: 2, title: 'title'}],
             filteredMovies: [{id: 1, title: 'title'}, {id: 2, title: 'title'}],
             deleteMovieId: '',
-            editMovie: ''
+            editMovie: '',
+            movieDetails: {}
         };
         const movie = {id: 2, title: 'New title'};
 
@@ -50,7 +53,8 @@ describe('Movies Reducer', () => {
             movies: [{id: 1}, {id: 2}],
             filteredMovies: [{id: 1}, {id: 2}],
             deleteMovieId: '',
-            editMovie: ''
+            editMovie: '',
+            movieDetails: {}
         };
         const movieId = 2;
 
@@ -69,7 +73,8 @@ describe('Movies Reducer', () => {
             movies: [{id: 1}, {id: 2}],
             filteredMovies: [{id: 1}, {id: 2}],
             deleteMovieId: '',
-            editMovie: ''
+            editMovie: '',
+            movieDetails: {}
         };
         const editMovieId = 2;
 

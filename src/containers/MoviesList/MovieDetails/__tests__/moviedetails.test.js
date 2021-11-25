@@ -6,8 +6,6 @@ import '@testing-library/jest-dom';
 import MovieDetails from '../index';
 
 describe('MovieDetails', () => {
-    let showMovieDetails;
-
     beforeEach(() => {
         const movie = {
             id: 1,
@@ -21,10 +19,8 @@ describe('MovieDetails', () => {
             overview: 'test overview'
         };
 
-        showMovieDetails = jest.fn(() => movie);
-
         render(<MovieDetails
-            showMovieDetails={showMovieDetails}
+            movie={movie}
         />, {wrapper: MemoryRouter});
     });
 
