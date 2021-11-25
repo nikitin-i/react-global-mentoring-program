@@ -8,7 +8,7 @@ import App from './app';
 
 const store = configureStore();
 
-ReactDOM.render(
+ReactDOM.hydrate(
     <React.StrictMode>
         <Provider store={store}>
             <BrowserRouter>

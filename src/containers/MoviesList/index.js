@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { openDeleteMovieModal, openEditMovieModal } from '../../store/actions/modalActions';
-import { getMoviesAsync, setDeleteMovie, setEditMovie } from '../../store/actions/moviesActions';
+import { getMoviesAsync, getMovieByIdAsync, setDeleteMovie, setEditMovie } from '../../store/actions/moviesActions';
 import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 import { formParamsObj } from '../../utils/utils';
 
@@ -14,6 +14,7 @@ import styles from './movieslist.modules.scss';
 export const MoviesList = ({
                         filteredMovies,
                         getMoviesAsync,
+                        getMovieByIdAsync,
                         setDeleteMovie,
                         setEditMovie,
                         openDeleteMovieModal,
@@ -55,7 +56,8 @@ export const MoviesList = ({
                         data={movie}
                         key={movie.id}
                         deleteHandler={openDeleteConfirmationModal}
-                        editHandler={openEditingMovieModal} />)
+                        editHandler={openEditingMovieModal}
+                        clickHandler={getMovieByIdAsync}/>)
                 }
             </div>
         </div>
@@ -77,6 +79,7 @@ const mapStateToProps = ({movies}) => ({
 
 const mapDispatchToProps = {
     getMoviesAsync,
+    getMovieByIdAsync,
     setDeleteMovie,
     setEditMovie,
     openDeleteMovieModal,

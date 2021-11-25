@@ -1,18 +1,18 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import SectionHeading from '../../../components/SectionHeading';
 import styles from './moviedetails.modules.scss';
 
-const MovieDetails = ({showMovieDetails}) => {
+const MovieDetails = ({movie}) => {
     const navigate = useNavigate();
-    const { movieId } = useParams();
-    const movie = showMovieDetails(Number(movieId));
 
     if (!movie) {
         navigate('/search');
 
+        return false;
+    } else if (!Object.keys(movie).length){
         return false;
     }
 
@@ -44,7 +44,13 @@ const MovieDetails = ({showMovieDetails}) => {
 };
 
 MovieDetails.propTypes = {
-    showMovieDetails: PropTypes.func.isRequired
+    movie: PropTypes.shape({
+        id: PropTypes.number,
+        poster_path: PropTypes.string,
+        title: PropTypes.string,
+        release_date: PropTypes.string,
+        tagline: PropTypes.string
+    })
 };
 
 export default MovieDetails;

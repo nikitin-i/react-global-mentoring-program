@@ -6,15 +6,16 @@ import {
     UPDATE_MOVIE,
     DELETE_MOVIE,
     SET_DELETE_MOVIE,
+    SET_MOVIE_DETAILS,
     SET_EDIT_MOVIE
 } from '../types';
-import {setEditMovie} from "../actions/moviesActions";
 
 const initialState = {
     movies: [],
     filteredMovies: [],
     deleteMovieId: '',
-    editMovie: ''
+    editMovie: '',
+    movieDetails: {}
 };
 
 const moviesReducer = (state = initialState, action) => {
@@ -61,6 +62,12 @@ const moviesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 deleteMovieId: payload
+            };
+
+        case SET_MOVIE_DETAILS:
+            return {
+                ...state,
+                movieDetails: payload
             };
 
         case SET_EDIT_MOVIE:
