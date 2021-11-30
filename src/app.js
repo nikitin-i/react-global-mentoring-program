@@ -86,8 +86,6 @@ export const App = (props) => {
         clearAllFilters();
     };
 
-    const showMovieDetails = id => props.filteredMovies.find(movie => movie.id === id);
-
     const hideMovieDetails = () => navigateTo(`./search${props.searchLine ? ('/' + props.searchLine) : ''}${location.search ? location.search : ''}`);
 
     const renderMovieAddedCongrats = () => (
@@ -128,7 +126,7 @@ export const App = (props) => {
             <Logo clickHandler={logoClickHandler} />
             <Button value='X' clickHandler={hideMovieDetails}/>
         </div>
-        <MovieDetails showMovieDetails={showMovieDetails} />
+        <MovieDetails movie={props.movieDetails} />
     </Header>;
 
     const mainPanel = <Main>
@@ -216,6 +214,7 @@ App.propTypes = {
 const mapStateToProps = ({movies, modals, filters}) => ({
     filteredMovies: movies.filteredMovies,
     editMovie: movies.editMovie,
+    movieDetails: movies.movieDetails,
     deleteMovieId: movies.deleteMovieId,
     isAddMovieCongratsModalOpen: modals.isAddMovieCongratsModalOpen,
     isDeleteMovieConfirmModalOpen: modals.isDeleteMovieConfirmModalOpen,

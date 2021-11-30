@@ -3,6 +3,7 @@ export const ADD_MOVIE = 'ADD_MOVIE';
 export const UPDATE_MOVIE = 'UPDATE_MOVIE';
 export const DELETE_MOVIE = 'DELETE_MOVIE';
 export const SET_DELETE_MOVIE = 'SET_DELETE_MOVIE';
+export const SET_MOVIE_DETAILS = 'SET_MOVIE_DETAILS';
 export const SET_EDIT_MOVIE = 'SET_EDIT_MOVIE';
 
 export const SEARCH_MOVIE = 'SEARCH_MOVIE';

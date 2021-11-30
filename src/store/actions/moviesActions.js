@@ -6,11 +6,12 @@ import {
     UPDATE_MOVIE,
     DELETE_MOVIE,
     SET_DELETE_MOVIE,
+    SET_MOVIE_DETAILS,
     SET_EDIT_MOVIE
 } from '../types';
 
 export const getMoviesAsync = (params={}) => (dispatch) => {
-    axios
+    return axios
         .get(`http://localhost:4000/movies`, {
             params: {
                 limit: 30,
@@ -18,6 +19,12 @@ export const getMoviesAsync = (params={}) => (dispatch) => {
             }
         })
         .then(({data: {data:movies}}) => dispatch(getMovies(movies)), err => console.error(err));
+};
+
+export const getMovieByIdAsync = (id) => (dispatch) => {
+    return axios
+        .get(`http://localhost:4000/movies/${id}`)
+        .then(({data:movie}) => dispatch(setMovieDetails(movie)), err => console.error(err));
 };
 
 export const addMovieAsync = (movie) => (dispatch) => {
@@ -70,6 +77,11 @@ export const deleteMovie = (id) => ({
 
 export const setDeleteMovie = (id) => ({
     type: SET_DELETE_MOVIE,
+    payload: id
+});
+
+export const setMovieDetails = (id) => ({
+    type: SET_MOVIE_DETAILS,
     payload: id
 });
 

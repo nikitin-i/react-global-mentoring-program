@@ -6,12 +6,13 @@ import '@testing-library/jest-dom';
 import { MoviesList } from '../index';
 
 describe('MoviesList', () => {
-    let getMoviesAsync, setDeleteMovie, setEditMovie, openEditMovieModal, openDeleteMovieModal;
+    let getMoviesAsync, getMovieByIdAsync, setDeleteMovie, setEditMovie, openEditMovieModal, openDeleteMovieModal;
 
     beforeEach(() => {
         const filteredMovies = [{id: 1, release_date: '2020-12-12'}, {id: 2, release_date: '1990-10-01'}];
 
         getMoviesAsync = jest.fn();
+        getMovieByIdAsync = jest.fn();
         setDeleteMovie = jest.fn();
         setEditMovie = jest.fn();
         openEditMovieModal = jest.fn();
@@ -22,6 +23,7 @@ describe('MoviesList', () => {
             openDeleteMovieModal={openDeleteMovieModal}
             openEditMovieModal={openEditMovieModal}
             getMoviesAsync={getMoviesAsync}
+            getMovieByIdAsync={getMovieByIdAsync}
             setDeleteMovie={setDeleteMovie}
             setEditMovie={setEditMovie}
         />, {wrapper: MemoryRouter});

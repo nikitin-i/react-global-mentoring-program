@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import MovieItem from '../index';
 
 describe('MovieItem', () => {
-    let deleteHandler, editHandler;
+    let deleteHandler, editHandler, clickHandler;
 
     beforeEach(() => {
         const movie = {
@@ -19,11 +19,13 @@ describe('MovieItem', () => {
 
         deleteHandler = jest.fn();
         editHandler = jest.fn();
+        clickHandler = jest.fn();
 
         render(<MovieItem
             data={movie}
             deleteHandler={deleteHandler}
             editHandler={editHandler}
+            clickHandler={clickHandler}
         />, {wrapper: MemoryRouter});
     });
 

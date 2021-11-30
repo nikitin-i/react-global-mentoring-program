@@ -1,23 +1,24 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import MovieMenu from '../MovieMenu';
 import styles from './moviesitem.modules.scss';
 
-const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler }) => {
-    const navigate = useNavigate();
+const MovieItem = ({data: {id, poster_path, title, release_date, tagline}, deleteHandler, editHandler, clickHandler }) => {
     const location = useLocation();
 
     const movieItemClickHandler = () => {
-        navigate(`/movie/${id}${location.search ? location.search : ''}`);
+        clickHandler(id);
     };
 
     release_date = release_date.slice(0, 4);
 
     return (
         <section id='movie' className={styles['movie-item']} onClick={movieItemClickHandler}>
-            <img className={styles['movie-item__poster']} src={poster_path} alt='poster image'/>
+            <Link to={`/movie/${id}${location.search ? location.search : ''}`}>
+                <img className={styles['movie-item__poster']} src={poster_path} alt='poster image'/>
+            </Link>
             <div className={styles['movie-item__info']}>
                 <h3 className={styles['movie-item__title']}>{title}</h3>
                 <div className={styles['movie-item__release']}>{release_date}</div>
@@ -39,7 +40,8 @@ MovieItem.propTypes = {
         tagline: PropTypes.string
     }),
     deleteHandler: PropTypes.func.isRequired,
-    editHandler: PropTypes.func.isRequired
+    editHandler: PropTypes.func.isRequired,
+    clickHandler: PropTypes.func.isRequired
 };
 
 MovieItem.defaultProps = {
