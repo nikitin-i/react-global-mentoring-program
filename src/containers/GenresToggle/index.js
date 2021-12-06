@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { changeActiveGenre } from '../../store/actions/filterActions';
 import { getMoviesAsync } from '../../store/actions/moviesActions';
+import { selectActiveGenre, selectActiveSorting, selectSearchLine } from '../../store/selectors';
 import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 
 import { formParamsObj } from '../../utils/utils';
@@ -29,11 +30,11 @@ export const GenresToggle = ({searchLine, activeGenre, activeSorting, getMoviesA
         }
     }, []);
 
-    const chooseActiveGenre = genre => {
+    const chooseActiveGenre = useCallback(genre => {
         getMoviesAsync(formParamsObj(searchLine, genre, activeSorting));
         changeActiveGenre(genre);
         updateSearchParams({genre});
-    };
+    }, []);
 
     return (
         <ul className={styles['genre-list']}>
@@ -57,9 +58,9 @@ GenresToggle.propTypes = {
 };
 
 const mapStateToProps = ({filters}) => ({
-    activeSorting: filters.activeSorting,
-    searchLine: filters.searchLine,
-    activeGenre: filters.activeGenre
+    activeSorting: selectActiveSorting(filters),
+    searchLine: selectSearchLine(filters),
+    activeGenre: selectActiveGenre(filters)
 });
 
 const mapDispatchToProps = {

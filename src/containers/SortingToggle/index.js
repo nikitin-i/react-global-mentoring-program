@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import { changeActiveSorting } from '../../store/actions/filterActions';
 import { getMoviesAsync } from '../../store/actions/moviesActions';
+import { selectActiveSorting, selectActiveGenre, selectSearchLine } from '../../store/selectors';
 import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 
 import { formParamsObj } from '../../utils/utils';
@@ -72,9 +73,9 @@ SortingToggle.propTypes = {
 };
 
 const mapStateToProps = ({filters}) => ({
-    activeSorting: filters.activeSorting,
-    searchLine: filters.searchLine,
-    activeGenre: filters.activeGenre
+    activeSorting: selectActiveSorting(filters),
+    searchLine: selectSearchLine(filters),
+    activeGenre: selectActiveGenre(filters)
 });
 
 const mapDispatchToProps = {
