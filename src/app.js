@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Routes, Route, useNavigate, useLocation  } from 'react-router-dom';
@@ -26,6 +26,18 @@ import MovieItemModal from './modals/MovieItemModal';
 
 import { openAddMovieModal, openCongratsMovieModal, closeAllModals } from './store/actions/modalActions';
 import { getMoviesAsync, addMovieAsync, deleteMovieAsync, updateMovieAsync } from './store/actions/moviesActions';
+import {
+    selectAddMovieModal,
+    selectDeleteMovieId,
+    selectDeleteMovieModal,
+    selectEditMovie,
+    selectEditMovieModal,
+    selectFilteredMovies,
+    selectMovieCongratsModal,
+    selectSearchLine,
+    selectMoviesCounter,
+    selectMovieDetailsFormatted
+} from './store/selectors';
 import { clearAllFilters } from './store/actions/filterActions';
 
 import styles from './app.modules.scss';
@@ -49,26 +61,26 @@ export const App = (props) => {
 
     const navigateTo = (path) => navigate(path);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         const { closeAllModals } = props;
 
         closeAllModals();
-    };
+    }, []);
 
-    const addMovieItemHandler = movie => {
+    const addMovieItemHandler = useCallback(movie => {
         const { addMovieAsync, openCongratsMovieModal, closeAllModals } = props;
 
         addMovieAsync(movie);
         closeAllModals();
         openCongratsMovieModal();
-    };
+    }, []);
 
-    const editMovieItemHandler = movie => {
+    const editMovieItemHandler = useCallback(movie => {
         const { updateMovieAsync, closeAllModals } = props;
 
         updateMovieAsync(movie);
         closeAllModals();
-    };
+    }, []);
 
     const deleteMovieItemHandler = () => {
         const { deleteMovieAsync, closeAllModals, deleteMovieId } = props;
@@ -135,7 +147,7 @@ export const App = (props) => {
                 <GenresToggle />
                 <SortingToggle />
             </section>
-            <MoviesCounter length={props.filteredMovies.length}/>
+            <MoviesCounter length={props.counter}/>
             <MoviesList />
         </ErrorBoundary>
     </Main>;
@@ -212,15 +224,16 @@ App.propTypes = {
 };
 
 const mapStateToProps = ({movies, modals, filters}) => ({
-    filteredMovies: movies.filteredMovies,
-    editMovie: movies.editMovie,
-    movieDetails: movies.movieDetails,
-    deleteMovieId: movies.deleteMovieId,
-    isAddMovieCongratsModalOpen: modals.isAddMovieCongratsModalOpen,
-    isDeleteMovieConfirmModalOpen: modals.isDeleteMovieConfirmModalOpen,
-    isAddMovieModalOpen: modals.isAddMovieModalOpen,
-    isEditMovieModalOpen: modals.isEditMovieModalOpen,
-    searchLine: filters.searchLine
+    filteredMovies: selectFilteredMovies(movies),
+    counter: selectMoviesCounter(movies),
+    editMovie: selectEditMovie(movies),
+    movieDetails: selectMovieDetailsFormatted(movies),
+    deleteMovieId: selectDeleteMovieId(movies),
+    isAddMovieCongratsModalOpen: selectMovieCongratsModal(modals),
+    isDeleteMovieConfirmModalOpen: selectDeleteMovieModal(modals),
+    isAddMovieModalOpen: selectAddMovieModal(modals),
+    isEditMovieModalOpen: selectEditMovieModal(modals),
+    searchLine: selectSearchLine(filters)
 });
 
 const mapDispatchToProps = {

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { openDeleteMovieModal, openEditMovieModal } from '../../store/actions/modalActions';
 import { getMoviesAsync, getMovieByIdAsync, setDeleteMovie, setEditMovie } from '../../store/actions/moviesActions';
+import { selectFilteredMovies } from '../../store/selectors';
 import { useCustomSearchParams } from '../../hooks/useCustomSearchParams';
 import { formParamsObj } from '../../utils/utils';
 
@@ -38,15 +39,15 @@ export const MoviesList = ({
         }
     }, []);
 
-    const openDeleteConfirmationModal = (id) => {
+    const openDeleteConfirmationModal = useCallback((id) => {
         setDeleteMovie(id);
         openDeleteMovieModal(true);
-    };
+    }, []);
 
-    const openEditingMovieModal = (id) => {
+    const openEditingMovieModal = useCallback((id) => {
         setEditMovie(id);
         openEditMovieModal(true);
-    };
+    }, []);
 
     return (
         <div className={styles['movies-list']}>
@@ -74,7 +75,7 @@ MoviesList.propTypes = {
 };
 
 const mapStateToProps = ({movies}) => ({
-    filteredMovies: movies.filteredMovies
+    filteredMovies: selectFilteredMovies(movies)
 });
 
 const mapDispatchToProps = {

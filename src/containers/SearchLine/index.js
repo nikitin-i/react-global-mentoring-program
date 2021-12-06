@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -7,6 +7,7 @@ import styles from './searchline.modules.scss';
 
 import { searchMovie } from '../../store/actions/filterActions';
 import { getMoviesAsync } from '../../store/actions/moviesActions';
+import { selectActiveGenre, selectActiveSorting, selectSearchLine } from '../../store/selectors';
 
 import { formParamsObj } from '../../utils/utils';
 import Input from '../../components/Input';
@@ -41,14 +42,14 @@ export const SearchLine = ({searchLine, activeGenre, activeSorting, getMoviesAsy
         }
     }, [])
 
-    const submitSearchRequest = () => {
+    const submitSearchRequest = useCallback(() => {
         getMoviesAsync(formParamsObj(search, activeGenre, activeSorting));
         searchMovie(search);
 
         navigate(`/search/${search}${location.search ? location.search : ''}`);
-    };
+    }, [search]);
 
-    const changeSearchLine = ({target: {value}}) => setSearch(value);
+    const changeSearchLine = useCallback(({target: {value}}) => setSearch(value), []);
     const keyDownHandler = ({keyCode}) => keyCode === ENTER_BUTTON_KEY_CODE && submitSearchRequest();
 
     return (
@@ -72,9 +73,9 @@ SearchLine.propTypes = {
 };
 
 const mapStateToProps = ({filters}) => ({
-    activeSorting: filters.activeSorting,
-    searchLine: filters.searchLine,
-    activeGenre: filters.activeGenre
+    activeSorting: selectActiveSorting(filters),
+    searchLine: selectSearchLine(filters),
+    activeGenre: selectActiveGenre(filters)
 });
 
 const mapDispatchToProps = {

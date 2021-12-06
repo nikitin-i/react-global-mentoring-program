@@ -16,13 +16,7 @@ const MovieDetails = ({movie}) => {
         return false;
     }
 
-    const { poster_path, title, genres, release_date, vote_average, runtime, overview } = movie;
-
-    const genresList = genres.join(' & ');
-    const year = release_date.slice(0, 4);
-    const hours = Math.floor(runtime / 60);
-    const minutes = runtime - hours * 60;
-    const duration = `${hours}h ${minutes}min`;
+    const { poster_path, title, genresList, vote_average, year, duration, overview } = movie;
 
     return (
         <section className={styles['movie-details']} id='movie-details'>
